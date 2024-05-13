@@ -1,0 +1,123 @@
+@charset "UTF-8";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  /* background-color: #faebd7; */
+}
+body header {
+  /* background-color: #ddedd6;
+  color: #000000; */
+  padding: 10px;
+  width: 100%;
+}
+body header nav {
+  display: flex;
+  align-items: center;
+}
+body header nav a {
+  font-size: 3rem;
+  color: #000000; /* 將連結顏色設置為紅色 */
+  text-decoration: none; /* 取消連結的下劃線 */
+  align-self: flex-start;
+}
+body header nav a:hover {
+  color: #b5b7c8; /* 在鼠標懸停時將連結顏色設置為綠色 */
+}
+body header nav h1 {
+  font-size: 2.5rem;
+  color: #090909;
+  margin: 0 auto;
+}
+body main {
+  display: flex;
+  flex-direction: column;
+  padding: 3rem;
+  /* background-color: #faebd7; */
+  height: 34rem;
+  align-items: center;
+}
+body main h2 {
+  font-size: 2.5rem;
+}
+body main .slidecard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+body main .slidecard .flashcard {
+  width: 37vw;
+  height: 25rem;
+  /* background-color: #aacbe0; */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin: 1rem;
+  perspective: 1000px;
+  cursor: pointer;
+}
+body main .slidecard .flashcard .front,
+body main .slidecard .flashcard .back {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  position: absolute;
+  backface-visibility: hidden;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgb(35, 33, 33);
+  transition: transform 0.5s;
+}
+body main .slidecard .flashcard .front {
+  /* background-color: #aacbe0; */
+  transform: rotateY(0deg);
+  z-index: 2; /* 確保正面在頂部 */
+}
+body main .slidecard .flashcard .front i.icon {
+  position: absolute; /* 將圖標設置為絕對定位 */
+  left: 3rem; /* 圖標相對於 .front 的左側 */
+}
+body main .slidecard .flashcard .back {
+  /* background-color: #7fe7aa; */
+  transform: rotateY(180deg);
+  z-index: 1; /* 確保背面在底部 */
+}
+body main .slidecard .flashcard.flipped .front {
+  transform: rotateY(-180deg);
+}
+body main .slidecard .flashcard.flipped .back {
+  transform: rotateY(0deg);
+}
+body footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 9rem;
+  /* background-color: #faebd7; */
+  /* footer-button 樣式 */
+}
+body footer .footer-button {
+  /* background-color: #a9d7f5; */
+  color: #fff;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 16px;
+  border-radius: 5px;
+  margin: 0rem 15vw;
+  /* transition: background-color 0.3s; */
+}
+/* body footer .footer-button:hover {
+  background-color: #2980b9;
+}  */
+
+/*# sourceMappingURL=challenge.css.map */

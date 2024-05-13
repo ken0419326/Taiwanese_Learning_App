@@ -1,0 +1,101 @@
+body div.main h2 {
+  font-size: 2rem;
+  padding: 20px 0;
+}
+body div.main div.achievement {
+  display: flex;
+  align-items: center;
+}
+body div.main div.achievement div.finished,
+body div.main div.achievement div.unfinished {
+  display: flex;
+  align-items: center;
+}
+body div.main div.achievement div.finished div.circle,
+body div.main div.achievement div.unfinished div.circle {
+  width: 15vh;
+  height: 15vh;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 40px 0 20px;
+}
+body div.main div.achievement div.finished div.circle img,
+body div.main div.achievement div.unfinished div.circle img {
+  width: 100%;
+  height: auto;
+  -o-object-fit: cover;
+  object-fit: cover;
+}
+
+body div.main div.achievement div.finished div.text,
+body div.main div.achievement div.unfinished div.text {
+  display: flex;
+  flex-direction: column;
+}
+body div.main div.achievement div.finished div.text h3,
+body div.main div.achievement div.unfinished div.text h3 {
+  font-size: 1.5rem;
+  padding-bottom: 5px;
+  text-decoration: underline;
+}
+body div.main div.achievement div.finished div.text h4,
+body div.main div.achievement div.unfinished div.text h4 {
+  margin: 10px 0;
+}
+body div.main div.achievement div.unfinished div.text h3,
+body div.main div.achievement div.unfinished div.text h4 {
+  color: rgba(128, 128, 128, 0.7);
+}
+body div.main div.record {
+  position: relative;
+}
+body div.main div.record div.stat {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 95%;
+}
+body div.main div.record div.stat div.day-number-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+body div.main div.record div.stat .day,
+body div.main div.record div.stat .number {
+  padding: 5px 10px;
+  margin: 5px;
+}
+body div.main div.record div.stat .day .h4,
+body div.main div.record div.stat .number .h4 {
+  font-weight: bold;
+}
+body div.main div.record div.stat .day {
+  text-align: center;
+  font-weight: bold;
+}
+body div.main div.record div.pro {
+  /* background-color: #faf5e2; */
+  margin-top: 10px;
+}
+body div.main div.record div.pro h3 {
+  font-size: 1.5rem;
+  padding-bottom: 20px;
+}
+body div.main div.record div.pro div.pg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90vw;
+  height: 5vh;
+  border-radius: 15px;
+  overflow: hidden;
+}
+body div.main div.record div.pro div.pg progress {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  /* color: lightgreen;
+  background-color: gray; */
+} /*# sourceMappingURL=dashboardStyles.css.map */
