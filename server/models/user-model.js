@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const bcrypt = require("bcrypt");
 
+const userProgressSchema = new Schema({
+  ch: Number,
+  maxContentViewed: Number,
+  maxQuizViewed: Number,
+});
+
 const userSchema = new Schema({
   username: {
     type: String,
@@ -18,6 +24,9 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
+  },
+  progress: {
+    type: [userProgressSchema],
   },
   date: {
     type: Date,

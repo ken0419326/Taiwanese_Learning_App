@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import CourseService from "../services/course.service";
 import KautianService from "../services/kautian.service";
-
+import ForbiddenPageService from "../services/forbiddenPage.service";
+import axios from "axios";
 import "../styles/courseContent-style.css";
 
 const ContentComponent = () => {
   const { ch, no } = useParams();
+  const Navigate = useNavigate();
 
   const [contentData, setContentData] = useState([]);
   const [audioElement, setAudioElement] = useState(null);
@@ -14,6 +16,7 @@ const ContentComponent = () => {
   const [contentLength, setContentLength] = useState();
   const [selectedText, setSelectedText] = useState("");
   const [definitions, setDefinitions] = useState([]);
+  const alertShownRef = useRef(false);
 
   CourseService.getCourseContentLength(ch)
     .then((response) => {
@@ -24,6 +27,21 @@ const ContentComponent = () => {
     });
 
   useEffect(() => {
+    const interceptorObject = ForbiddenPageService.startInterceptor();
+    // Handle interceptor errors by updating errorMessage state
+    const handleError = (error) => {
+      if (!alertShownRef.current) {
+        alertShownRef.current = true;
+        window.alert(error);
+        Navigate(-1);
+      }
+    };
+    // Attach the handleError function as an error callback for the interceptor
+    interceptorObject.interceptor = axios.interceptors.response.use(
+      (response) => response,
+      handleError
+    );
+
     CourseService.getCourseContent(ch, no)
       .then((response) => {
         setContentData(response.data);
@@ -40,6 +58,8 @@ const ContentComponent = () => {
     setDefinitions([]);
 
     return () => {
+      axios.interceptors.response.eject(interceptorObject.interceptor);
+
       if (audio) {
         audio.removeEventListener("ended", handleAudioEnded);
         audio.pause();

@@ -7,7 +7,7 @@ const cors = require("cors");
 
 const authRoute = require("./routes").auth;
 const courseRoute = require("./routes").course;
-const kautianRoute = require("./routes").kautien;
+const kautianRoute = require("./routes").kautian;
 const passport = require("passport");
 require("./config/passport")(passport);
 
