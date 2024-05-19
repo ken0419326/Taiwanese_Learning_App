@@ -8,15 +8,6 @@ router.use((req, res, next) => {
   next();
 });
 
-// display all courses
-router.get("/", async (req, res) => {
-  try {
-    res.send("Under construction ...");
-  } catch (e) {
-    return res.status(500).send(e);
-  }
-});
-
 router.get("/:hanji", async (req, res) => {
   try {
     let { hanji } = req.params;

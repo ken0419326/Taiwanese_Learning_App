@@ -3,9 +3,38 @@ const { Schema } = mongoose;
 const bcrypt = require("bcrypt");
 
 const userProgressSchema = new Schema({
-  ch: Number,
-  maxContentViewed: Number,
-  maxQuizViewed: Number,
+  ch: {
+    type: Number,
+    required: true,
+  },
+  maxContentViewed: {
+    type: Number,
+    required: true,
+  },
+  maxQuizViewed: {
+    type: Number,
+    required: true,
+  },
+});
+
+const userCollectionSchema = new Schema({
+  ch: {
+    type: Number, // Assuming chapter should be a number
+    required: true,
+  },
+  no: {
+    type: Number, // Assuming number should be a number
+    required: true,
+  },
+  tags: {
+    type: [String], // Assuming tags should be an array of strings
+    validate: {
+      validator: function (v) {
+        return Array.isArray(v);
+      },
+      message: (props) => `${props.value} is not a valid array of strings!`,
+    },
+  },
 });
 
 const userSchema = new Schema({
@@ -27,6 +56,12 @@ const userSchema = new Schema({
   },
   progress: {
     type: [userProgressSchema],
+  },
+  tags: {
+    type: [String],
+  },
+  collections: {
+    type: [userCollectionSchema],
   },
   date: {
     type: Date,
