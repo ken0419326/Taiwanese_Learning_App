@@ -64,6 +64,33 @@ class VocabService {
       }
     );
   }
+  renameTag(oldTag, newTag) {
+    let token = getToken();
+    return axios.patch(
+      API_URL + "/tag",
+      {
+        oldTag: oldTag,
+        newTag: newTag,
+      },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+  }
+
+  deleteTag(tag) {
+    let token = getToken();
+    return axios.delete(API_URL + "/tag", {
+      data: {
+        tag: tag,
+      },
+      headers: {
+        Authorization: token,
+      },
+    });
+  }
 }
 
 export default new VocabService();

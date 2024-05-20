@@ -88,14 +88,23 @@ router.delete("/save/:ch/:no", async (req, res) => {
       return res.status(404).send("User not found");
     }
 
-    let collectionEntry = user.collections.find(
+
+    let collectionIndex = user.collections.findIndex(
       (collection) =>
         collection.ch === parseInt(ch) && collection.no === parseInt(no)
     );
 
-    if (collectionEntry) {
+
+    if (collectionIndex !== -1) {
       // Remove the tag from the tags array
+      let collectionEntry = user.collections[collectionIndex];
       collectionEntry.tags = collectionEntry.tags.filter((t) => t !== tag);
+
+      // Remove the collection if its tags array is empty
+      if (collectionEntry.tags.length === 0) {
+        user.collections.splice(collectionIndex, 1);
+      }
+
       await user.save(); // Save the updated user document
       res.send("Tag removed successfully");
     } else {
@@ -157,4 +166,74 @@ router.post("/note/:ch/:no", async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+router.patch("/tag", async (req, res) => {
+  const { oldTag, newTag } = req.body;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Check if the new tag already exists in user's tags
+    if (user.tags.includes(newTag)) {
+      return res.status(400).send("這个標籤已經用過矣喔！");
+    }
+
+    // Update tags in User document
+    const updatedTags = user.tags.map((tag) => (tag === oldTag ? newTag : tag));
+    user.tags = updatedTags;
+
+    // Update tags in User collections
+    user.collections.forEach((collection) => {
+      collection.tags = collection.tags.map((tag) =>
+        tag === oldTag ? newTag : tag
+      );
+    });
+
+    // Save changes to the user document
+    await user.save();
+
+    res.status(200).send("Tags updated successfully");
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+router.delete("/tag", async (req, res) => {
+  const { tag } = req.body;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Remove tag from User.tags
+    user.tags = user.tags.filter((t) => t !== tag);
+
+    // Remove tag from User.collections
+    user.collections.forEach((collection) => {
+      collection.tags = collection.tags.filter((t) => t !== tag);
+    });
+
+    // Remove collections with empty tags
+    user.collections = user.collections.filter(
+      (collection) => collection.tags.length > 0
+    );
+
+    // Save changes to the user document
+    await user.save();
+
+    res.status(200).send("Tag removed successfully");
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 module.exports = router;

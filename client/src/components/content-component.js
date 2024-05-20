@@ -47,7 +47,11 @@ const ContentComponent = () => {
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && newTags.trim()) {
       const newTagsArray = newTags.trim().split(" ");
+      const updatedAvailableTags = availableTags.filter(
+        (tag) => !newTagsArray.includes(tag)
+      );
       setCurrentTags([...new Set([...currentTags, ...newTagsArray])]);
+      setAvailableTags(updatedAvailableTags);
       setNewTags("");
       e.preventDefault(); // Prevent form submission or other default behavior
     }
