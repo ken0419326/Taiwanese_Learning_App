@@ -35,6 +35,10 @@ const userCollectionSchema = new Schema({
       message: (props) => `${props.value} is not a valid array of strings!`,
     },
   },
+  note: {
+    type: String,
+    default: "",
+  },
 });
 
 const userSchema = new Schema({

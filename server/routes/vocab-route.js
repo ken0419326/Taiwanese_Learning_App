@@ -26,6 +26,17 @@ const authMiddleware = async (req, res, next) => {
 
 router.use(authMiddleware);
 
+router.get("/", async (req, res) => {
+  try {
+    const _id = req.user._id;
+    const userFound = await User.findOne({ _id }).exec();
+    const tagsFound = userFound.tags;
+    res.send(tagsFound);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
 router.post("/save/:ch/:no", async (req, res) => {
   const { ch, no } = req.params;
   const { tags } = req.body;
@@ -65,4 +76,85 @@ router.post("/save/:ch/:no", async (req, res) => {
   }
 });
 
+router.delete("/save/:ch/:no", async (req, res) => {
+  const { ch, no } = req.params;
+  const { tag } = req.body;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    let collectionEntry = user.collections.find(
+      (collection) =>
+        collection.ch === parseInt(ch) && collection.no === parseInt(no)
+    );
+
+    if (collectionEntry) {
+      // Remove the tag from the tags array
+      collectionEntry.tags = collectionEntry.tags.filter((t) => t !== tag);
+      await user.save(); // Save the updated user document
+      res.send("Tag removed successfully");
+    } else {
+      return res.status(404).send("Collection not found");
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+router.get("/note/:ch/:no", async (req, res) => {
+  const { ch, no } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    let collectionFound = user.collections.find(
+      (collection) =>
+        collection.ch === parseInt(ch) && collection.no === parseInt(no)
+    );
+
+    if (collectionFound) {
+      res.send(collectionFound.note);
+    } else {
+      return res.status(404).send("Collection not found");
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+router.post("/note/:ch/:no", async (req, res) => {
+  const { ch, no } = req.params;
+  const { note } = req.body;
+  const userId = req.user._id;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    let collectionFound = user.collections.find(
+      (collection) =>
+        collection.ch === parseInt(ch) && collection.no === parseInt(no)
+    );
+    if (collectionFound) {
+      collectionFound.note = note;
+      await user.save();
+      res.send("Collection saved successfully");
+    } else {
+      return res.status(404).send("Collection not found");
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 module.exports = router;

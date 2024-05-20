@@ -11,11 +11,52 @@ function getToken() {
 }
 
 class VocabService {
+  getVocabTags() {
+    let token = getToken();
+    return axios.get(API_URL, {
+      headers: {
+        Authorization: token,
+      },
+    });
+  }
+
   saveCollection(ch, no, tags) {
     let token = getToken();
     return axios.post(
       API_URL + "/save/" + ch + "/" + no,
       { tags },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+  }
+
+  removeCollectionTag(ch, no, tag) {
+    let token = getToken();
+    return axios.delete(API_URL + "/save/" + ch + "/" + no, {
+      data: { tag },
+      headers: {
+        Authorization: token,
+      },
+    });
+  }
+
+  getCollectionNote(ch, no) {
+    let token = getToken();
+    return axios.get(API_URL + "/note/" + ch + "/" + no, {
+      headers: {
+        Authorization: token,
+      },
+    });
+  }
+
+  setCollectionNote(ch, no, note) {
+    let token = getToken();
+    return axios.post(
+      API_URL + "/note/" + ch + "/" + no,
+      { note },
       {
         headers: {
           Authorization: token,

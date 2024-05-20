@@ -11,7 +11,7 @@ import "../styles/courseContent-style.css";
 
 const ContentComponent = () => {
   const { ch, no } = useParams();
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [contentData, setContentData] = useState([]);
   const [audioElement, setAudioElement] = useState(null);
@@ -22,9 +22,9 @@ const ContentComponent = () => {
   const alertShownRef = useRef(false);
 
   const [show, setShow] = useState(false);
-  const [allTags, setAllTags] = useState();
-  const [currentTags, setCurrentTags] = useState();
-  const [availableTags, setAvailableTags] = useState();
+  const [allTags, setAllTags] = useState([]);
+  const [currentTags, setCurrentTags] = useState([]);
+  const [availableTags, setAvailableTags] = useState([]);
   const [newTags, setNewTags] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
 
@@ -83,60 +83,61 @@ const ContentComponent = () => {
     }
   };
 
-  CourseService.getCourseContentLength(ch)
-    .then((response) => {
-      setContentLength(response.data.length);
-    })
-    .catch((error) => {
-      console.error("Error fetching content length:", error);
-    });
-
   useEffect(() => {
-    const interceptorObject = ForbiddenPageService.startInterceptor();
-    // Handle interceptor errors by updating errorMessage state
-    const handleError = (error) => {
-      if (!alertShownRef.current) {
-        alertShownRef.current = true;
-        window.alert(error);
-        Navigate(-1);
+    const fetchData = async () => {
+      try {
+        const interceptorObject = ForbiddenPageService.startInterceptor();
+        // Handle interceptor errors by updating errorMessage state
+        const handleError = (error) => {
+          if (!alertShownRef.current) {
+            alertShownRef.current = true;
+            window.alert(error);
+            navigate(-1);
+          }
+        };
+        // Attach the handleError function as an error callback for the interceptor
+        interceptorObject.interceptor = axios.interceptors.response.use(
+          (response) => response,
+          handleError
+        );
+
+        const contentLengthResponse =
+          await CourseService.getCourseContentLength(ch);
+        setContentLength(contentLengthResponse.data.length);
+
+        const contentResponse = await CourseService.getCourseContent(ch, no);
+        setContentData(contentResponse.data);
+
+        const audio = document.getElementById("audio");
+        setAudioElement(audio);
+        audio.addEventListener("ended", handleAudioEnded);
+        setIsPlaying(false);
+        setSelectedText("");
+        setDefinitions([]);
+
+        const response = await AuthService.fetchUserData();
+        localStorage.setItem("user", JSON.stringify(response.data));
+        const user = JSON.parse(localStorage.getItem("user")).user;
+        setAllTags(user.tags);
+        const collection = user.collections.find(
+          (collection) => collection.ch == ch && collection.no == no
+        );
+        setCurrentTags(collection ? collection.tags.sort() : []);
+
+        return () => {
+          axios.interceptors.response.eject(interceptorObject.interceptor);
+
+          if (audio) {
+            audio.removeEventListener("ended", handleAudioEnded);
+            audio.pause();
+          }
+        };
+      } catch (error) {
+        console.error("Error fetching data: ", error);
       }
     };
-    // Attach the handleError function as an error callback for the interceptor
-    interceptorObject.interceptor = axios.interceptors.response.use(
-      (response) => response,
-      handleError
-    );
 
-    CourseService.getCourseContent(ch, no)
-      .then((response) => {
-        setContentData(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching content data: ", error);
-      });
-
-    const audio = document.getElementById("audio");
-    setAudioElement(audio);
-    audio.addEventListener("ended", handleAudioEnded);
-    setIsPlaying(false);
-    setSelectedText("");
-    setDefinitions([]);
-
-    const user = JSON.parse(localStorage.getItem("user")).user;
-    setAllTags(user.tags);
-    const collection = user.collections.find(
-      (collection) => collection.ch == ch && collection.no == no
-    );
-    setCurrentTags(collection ? collection.tags.sort() : []);
-
-    return () => {
-      axios.interceptors.response.eject(interceptorObject.interceptor);
-
-      if (audio) {
-        audio.removeEventListener("ended", handleAudioEnded);
-        audio.pause();
-      }
-    };
+    fetchData();
   }, [ch, no]);
 
   const handlePlayAudio = () => {
@@ -221,7 +222,7 @@ const ContentComponent = () => {
                         <p className="modal-p">創建新的標籤</p>
                         <Form.Control
                           type="text"
-                          placeholder="Type your new tag here"
+                          placeholder="新的標籤"
                           value={newTags}
                           onChange={handleTagChange}
                           onKeyPress={handleKeyPress}
@@ -250,7 +251,7 @@ const ContentComponent = () => {
                         ))}
                       </ListGroup>
                     )}
-                    <p className="modal-p">其他標籤</p>
+                    <Form.Label>其他標籤</Form.Label>
                     {availableTags && (
                       <ListGroup>
                         {availableTags.map((tag, index) => (
