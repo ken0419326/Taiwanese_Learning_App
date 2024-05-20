@@ -18,6 +18,7 @@ body {
   min-height: calc(100vh - 80px);
   transition: transform 0.3s ease;
   overflow-x: hidden;
+  margin-top: 10px;
 }
 
 .card {

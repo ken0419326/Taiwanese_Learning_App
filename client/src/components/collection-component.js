@@ -192,13 +192,13 @@ const CollectionComponent = () => {
                 >
                   <FontAwesomeIcon icon={faPen} />
                 </button>
+                <button
+                  className="remove-btn"
+                  onClick={() => handleRemoveTag(index, tag)}
+                >
+                  <FontAwesomeIcon icon={faX} />
+                </button>
               </div>
-              <button
-                className="remove-btn"
-                onClick={() => handleRemoveTag(index, tag)}
-              >
-                <FontAwesomeIcon icon={faX} />
-              </button>
             </div>
             <div className="detailed">
               {selectedCardDetails[index].text && (

@@ -54,5 +54,14 @@ class CourseService {
       },
     });
   }
+
+  getProgress(ch) {
+    let token = getToken();
+    return axios.get(API_URL + "/progress/" + ch, {
+      headers: {
+        Authorization: token,
+      },
+    });
+  }
 }
 export default new CourseService();
