@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import CourseService from "../services/course.service";
+import ForbiddenPageService from "../services/forbiddenPage.service";
+import axios from "axios";
 import "../styles/courseQuiz-style.css";
 
 const QuizComponent = () => {
@@ -11,9 +13,25 @@ const QuizComponent = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [buttonStyles, setButtonStyles] = useState({});
   const [status, setStatus] = useState();
+  const alertShownRef = useRef(false);
   const Navigate = useNavigate();
 
   useEffect(() => {
+    const interceptorObject = ForbiddenPageService.startInterceptor();
+    // Handle interceptor errors by updating errorMessage state
+    const handleError = (error) => {
+      if (!alertShownRef.current) {
+        alertShownRef.current = true;
+        window.alert(error);
+        Navigate(-1);
+      }
+    };
+    // Attach the handleError function as an error callback for the interceptor
+    interceptorObject.interceptor = axios.interceptors.response.use(
+      (response) => response,
+      handleError
+    );
+
     // Fetch quiz data
     CourseService.getCourseQuiz(ch, no)
       .then((response) => {
@@ -45,6 +63,10 @@ const QuizComponent = () => {
     setSelectedAnswer(null);
     setButtonStyles({});
     setStatus("unfinished");
+
+    return () => {
+      axios.interceptors.response.eject(interceptorObject.interceptor);
+    };
   }, [ch, no]);
 
   const handleAnswerClick = (id) => {
@@ -55,6 +77,7 @@ const QuizComponent = () => {
       updatedStyles[id] = { backgroundColor: "rgb(46, 204, 113)" };
       setButtonStyles(updatedStyles);
       setStatus("done");
+      CourseService.setMaxCourseCompleted(ch, no);
     } else {
       updatedStyles[id] = { backgroundColor: "rgb(231, 76, 60)" };
       setButtonStyles(updatedStyles);

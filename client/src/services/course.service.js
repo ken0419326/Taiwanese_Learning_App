@@ -54,6 +54,14 @@ class CourseService {
       },
     });
   }
-}
 
+  setMaxCourseCompleted(ch, no) {
+    let token = getToken();
+    return axios.get(API_URL + "/completed/" + ch + "/" + no, {
+      headers: {
+        Authorization: token,
+      },
+    });
+  }
+}
 export default new CourseService();
