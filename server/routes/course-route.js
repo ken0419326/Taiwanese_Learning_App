@@ -51,7 +51,6 @@ const checkAndUpdateProgress = async (req, res, next) => {
     if (!user) {
       return res.status(404).send("User not found");
     }
-    console.log("aaa");
     let progress = user.progress.find((p) => p.ch === parseInt(ch));
     if (!progress) {
       progress = {
