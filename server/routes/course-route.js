@@ -71,6 +71,7 @@ const checkAndUpdateProgress = async (req, res, next) => {
       }
     } else if (sec === "quiz" && no <= maxQuiz) {
       // Quiz access logic
+      let x = progress.maxQuizViewed + 1;
       if (no == progress.maxQuizViewed + 1 && contentDone) {
         progress.maxQuizViewed = no;
       } else if (no > progress.maxQuizViewed || !contentDone) {
@@ -112,6 +113,40 @@ router.get("/:sec/:ch/:no", async (req, res) => {
     }
   } catch (e) {
     console.error("Error:", e);
+    return res.status(500).send("Internal server error");
+  }
+});
+
+router.get("/progress/:ch", async (req, res) => {
+  const { ch } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Find progress for the provided chapter
+    let chapterProgress = user.progress.find((progress) => progress.ch == ch);
+    if (!chapterProgress) {
+      // If progress for the chapter is not found, create a new progress entry
+      chapterProgress = {
+        ch: ch,
+        maxContentViewed: 0,
+        maxQuizViewed: 0,
+      };
+      // Add the new progress entry to the user's progress array
+      user.progress.push(chapterProgress);
+      // Save the updated user document
+      await user.save();
+    }
+
+    // Return the progress for the chapter
+    res.status(200).json(chapterProgress);
+  } catch (error) {
+    console.error("Error:", error);
     return res.status(500).send("Internal server error");
   }
 });
