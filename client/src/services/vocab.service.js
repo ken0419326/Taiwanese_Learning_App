@@ -64,7 +64,6 @@ class VocabService {
       }
     );
   }
-
   renameTag(oldTag, newTag) {
     let token = getToken();
     return axios.patch(

@@ -88,10 +88,12 @@ router.delete("/save/:ch/:no", async (req, res) => {
       return res.status(404).send("User not found");
     }
 
+
     let collectionIndex = user.collections.findIndex(
       (collection) =>
         collection.ch === parseInt(ch) && collection.no === parseInt(no)
     );
+
 
     if (collectionIndex !== -1) {
       // Remove the tag from the tags array

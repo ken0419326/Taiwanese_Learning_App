@@ -54,7 +54,12 @@ const checkAndUpdateProgress = async (req, res, next) => {
 
     let progress = user.progress.find((p) => p.ch === parseInt(ch));
     if (!progress) {
-      progress = { ch: parseInt(ch), maxContentViewed: 0, maxQuizViewed: 0 };
+      progress = {
+        ch: parseInt(ch),
+        maxContentViewed: 0,
+        maxQuizViewed: 0,
+        maxQuizCompleted: 0,
+      };
       user.progress.push(progress);
     }
 
@@ -62,7 +67,11 @@ const checkAndUpdateProgress = async (req, res, next) => {
     let maxQuiz = (await CourseQuiz.find({ ch: ch }).exec()).length;
     let contentDone = progress.maxContentViewed == maxContent;
 
-    if (sec === "content" && no <= maxContent) {
+    if (sec === "completed") {
+      if (no > progress.maxQuizCompleted) {
+        progress.maxQuizCompleted = no;
+      }
+    } else if (sec === "content" && no <= maxContent) {
       // Content access logic
       if (no == progress.maxContentViewed + 1) {
         progress.maxContentViewed = no;
@@ -103,6 +112,12 @@ router.get("/:sec/:ch/:no", async (req, res) => {
       return res.send(contentFound);
     } else if (sec === "quiz") {
       // Use findOne for consistency
+      let quizFound = await CourseQuiz.findOne({ ch: ch, no: no }).exec();
+      if (!quizFound) {
+        return res.status(404).send("Quiz not found");
+      }
+      return res.send(quizFound);
+    } else if (sec === "completed") {
       let quizFound = await CourseQuiz.findOne({ ch: ch, no: no }).exec();
       if (!quizFound) {
         return res.status(404).send("Quiz not found");

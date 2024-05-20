@@ -15,6 +15,10 @@ const userProgressSchema = new Schema({
     type: Number,
     required: true,
   },
+  maxQuizCompleted: {
+    type: Number,
+    required: true,
+  },
 });
 
 const userCollectionSchema = new Schema({

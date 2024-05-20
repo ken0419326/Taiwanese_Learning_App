@@ -77,6 +77,7 @@ const QuizComponent = () => {
       updatedStyles[id] = { backgroundColor: "rgb(46, 204, 113)" };
       setButtonStyles(updatedStyles);
       setStatus("done");
+      CourseService.setMaxCourseCompleted(ch, no);
     } else {
       updatedStyles[id] = { backgroundColor: "rgb(231, 76, 60)" };
       setButtonStyles(updatedStyles);
