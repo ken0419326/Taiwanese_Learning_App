@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { Button, Modal, Form, ListGroup } from "react-bootstrap";
+import AuthService from "../services/auth.service";
 import CourseService from "../services/course.service";
 import KautianService from "../services/kautian.service";
-
+import VocabService from "../services/vocab.service";
+import ForbiddenPageService from "../services/forbiddenPage.service";
+import axios from "axios";
 import "../styles/courseContent-style.css";
 
 const ContentComponent = () => {
   const { ch, no } = useParams();
+  const navigate = useNavigate();
 
   const [contentData, setContentData] = useState([]);
   const [audioElement, setAudioElement] = useState(null);
@@ -14,37 +19,125 @@ const ContentComponent = () => {
   const [contentLength, setContentLength] = useState();
   const [selectedText, setSelectedText] = useState("");
   const [definitions, setDefinitions] = useState([]);
+  const alertShownRef = useRef(false);
 
-  CourseService.getCourseContentLength(ch)
-    .then((response) => {
-      setContentLength(response.data.length);
-    })
-    .catch((error) => {
-      console.error("Error fetching content length:", error);
-    });
+  const [show, setShow] = useState(false);
+  const [allTags, setAllTags] = useState([]);
+  const [currentTags, setCurrentTags] = useState([]);
+  const [availableTags, setAvailableTags] = useState([]);
+  const [newTags, setNewTags] = useState("");
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const handleShow = () => {
+    setShow(true);
+    setAvailableTags(
+      allTags.filter((tag) => !currentTags.includes(tag)).sort()
+    );
+  };
+  const handleClose = () => {
+    setShow(false);
+    setNewTags([]);
+    setSelectedTags([]);
+  };
+
+  const handleTagChange = (e) => {
+    setNewTags(e.target.value);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && newTags.trim()) {
+      const newTagsArray = newTags.trim().split(" ");
+      setCurrentTags([...new Set([...currentTags, ...newTagsArray])]);
+      setNewTags("");
+      e.preventDefault(); // Prevent form submission or other default behavior
+    }
+  };
+
+  const handleAddTag = (tagToAdd) => {
+    setCurrentTags([...currentTags, tagToAdd].sort());
+    setAvailableTags(availableTags.filter((tag) => tag !== tagToAdd).sort());
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    setCurrentTags(currentTags.filter((tag) => tag !== tagToRemove));
+    if (allTags.includes(tagToRemove)) {
+      setAvailableTags([...availableTags, tagToRemove].sort());
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      await VocabService.saveCollection(ch, no, currentTags);
+      handleClose();
+      const response = await AuthService.fetchUserData();
+      localStorage.setItem("user", JSON.stringify(response.data));
+
+      const user = JSON.parse(localStorage.getItem("user")).user;
+      setAllTags(user.tags);
+      const collection = user.collections.find(
+        (collection) => collection.ch == ch && collection.no == no
+      );
+      setCurrentTags(collection ? collection.tags.sort() : []);
+    } catch (error) {
+      console.error("Error saving collection:", error);
+    }
+  };
 
   useEffect(() => {
-    CourseService.getCourseContent(ch, no)
-      .then((response) => {
-        setContentData(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching content data: ", error);
-      });
+    const fetchData = async () => {
+      try {
+        const interceptorObject = ForbiddenPageService.startInterceptor();
+        // Handle interceptor errors by updating errorMessage state
+        const handleError = (error) => {
+          if (!alertShownRef.current) {
+            alertShownRef.current = true;
+            window.alert(error);
+            navigate(-1);
+          }
+        };
+        // Attach the handleError function as an error callback for the interceptor
+        interceptorObject.interceptor = axios.interceptors.response.use(
+          (response) => response,
+          handleError
+        );
 
-    const audio = document.getElementById("audio");
-    setAudioElement(audio);
-    audio.addEventListener("ended", handleAudioEnded);
-    setIsPlaying(false);
-    setSelectedText("");
-    setDefinitions([]);
+        const contentLengthResponse =
+          await CourseService.getCourseContentLength(ch);
+        setContentLength(contentLengthResponse.data.length);
 
-    return () => {
-      if (audio) {
-        audio.removeEventListener("ended", handleAudioEnded);
-        audio.pause();
+        const contentResponse = await CourseService.getCourseContent(ch, no);
+        setContentData(contentResponse.data);
+
+        const audio = document.getElementById("audio");
+        setAudioElement(audio);
+        audio.addEventListener("ended", handleAudioEnded);
+        setIsPlaying(false);
+        setSelectedText("");
+        setDefinitions([]);
+
+        const response = await AuthService.fetchUserData();
+        localStorage.setItem("user", JSON.stringify(response.data));
+        const user = JSON.parse(localStorage.getItem("user")).user;
+        setAllTags(user.tags);
+        const collection = user.collections.find(
+          (collection) => collection.ch == ch && collection.no == no
+        );
+        setCurrentTags(collection ? collection.tags.sort() : []);
+
+        return () => {
+          axios.interceptors.response.eject(interceptorObject.interceptor);
+
+          if (audio) {
+            audio.removeEventListener("ended", handleAudioEnded);
+            audio.pause();
+          }
+        };
+      } catch (error) {
+        console.error("Error fetching data: ", error);
       }
     };
+
+    fetchData();
   }, [ch, no]);
 
   const handlePlayAudio = () => {
@@ -113,6 +206,77 @@ const ContentComponent = () => {
                 <p>{contentData.lomaji}</p>
                 <p>華語：{contentData.mandarin}</p>
               </div>
+
+              <>
+                <Button className="add-btn" onClick={handleShow}>
+                  +
+                </Button>
+
+                <Modal show={show} onHide={handleClose}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>增添標籤</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Form>
+                      <Form.Group controlId="formTag">
+                        <p className="modal-p">創建新的標籤</p>
+                        <Form.Control
+                          type="text"
+                          placeholder="新的標籤"
+                          value={newTags}
+                          onChange={handleTagChange}
+                          onKeyPress={handleKeyPress}
+                        />
+                      </Form.Group>
+                    </Form>
+                    <p className="modal-p">屬於...</p>
+                    {currentTags && (
+                      <ListGroup>
+                        {currentTags.map((tag, index) => (
+                          <ListGroup.Item
+                            key={index}
+                            variant="light"
+                            className="tag-item"
+                          >
+                            {tag}
+                            <Button
+                              variant="none"
+                              size="sm"
+                              className="remove-btn"
+                              onClick={() => handleRemoveTag(tag)}
+                            >
+                              x
+                            </Button>
+                          </ListGroup.Item>
+                        ))}
+                      </ListGroup>
+                    )}
+                    <Form.Label>其他標籤</Form.Label>
+                    {availableTags && (
+                      <ListGroup>
+                        {availableTags.map((tag, index) => (
+                          <ListGroup.Item
+                            key={index}
+                            action
+                            active={selectedTags.includes(tag)}
+                            onClick={() => handleAddTag(tag)}
+                          >
+                            {tag}
+                          </ListGroup.Item>
+                        ))}
+                      </ListGroup>
+                    )}
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      取消
+                    </Button>
+                    <Button variant="primary" onClick={handleSave}>
+                      確定
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </>
             </div>
             <div className="detailed">
               {definitions.map((definition, index) => (

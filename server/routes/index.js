@@ -1,5 +1,6 @@
 module.exports = {
   auth: require("./auth"),
   course: require("./course-route"),
-  kautien: require("./kautian-route"),
+  kautian: require("./kautian-route"),
+  vocab: require("./vocab-route"),
 };

@@ -40,6 +40,7 @@ body {
   -webkit-user-select: text;
   -moz-user-select: text;
   user-select: text;
+  width: 500px;
 }
 .card .card-content .basic {
   display: flex;
@@ -56,6 +57,21 @@ body {
   -moz-user-select: text;
   user-select: text;
 } */
+
+.tag-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.remove-btn {
+  margin-left: auto;
+}
+
+.modal-p {
+  margin: 10px 0px;
+}
+
 .card .card-content .detailed {
   flex-grow: 1;
   text-align: left;
@@ -79,6 +95,23 @@ body {
   margin-right: 20px;
 }
 .play-btn:hover {
+  background-color: gray;
+}
+
+.add-btn {
+  background-color: #aaa;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 40px;
+}
+.add-btn:hover {
   background-color: gray;
 }
 
