@@ -51,7 +51,6 @@ const checkAndUpdateProgress = async (req, res, next) => {
     if (!user) {
       return res.status(404).send("User not found");
     }
-
     let progress = user.progress.find((p) => p.ch === parseInt(ch));
     if (!progress) {
       progress = {
@@ -151,6 +150,7 @@ router.get("/progress/:ch", async (req, res) => {
         ch: ch,
         maxContentViewed: 0,
         maxQuizViewed: 0,
+        maxQuizCompleted: 0,
       };
       // Add the new progress entry to the user's progress array
       user.progress.push(chapterProgress);

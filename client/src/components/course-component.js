@@ -56,11 +56,12 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
       sec = "content";
       no = progress.maxContentViewed + 1;
     } else if (
-      progress.maxQuizViewed !== maxQuiz ||
-      (progress.maxContentViewed === maxContent && progress.maxQuizViewed === 0)
+      progress.maxQuizCompleted !== maxQuiz ||
+      (progress.maxContentViewed === maxContent &&
+        progress.maxQuizCompleted === 0)
     ) {
       sec = "quiz";
-      no = progress.maxQuizViewed + 1;
+      no = progress.maxQuizCompleted + 1;
     } else {
       sec = "content";
       no = 1;
