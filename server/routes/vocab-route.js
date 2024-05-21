@@ -88,12 +88,10 @@ router.delete("/save/:ch/:no", async (req, res) => {
       return res.status(404).send("User not found");
     }
 
-
     let collectionIndex = user.collections.findIndex(
       (collection) =>
         collection.ch === parseInt(ch) && collection.no === parseInt(no)
     );
-
 
     if (collectionIndex !== -1) {
       // Remove the tag from the tags array
@@ -168,8 +166,14 @@ router.post("/note/:ch/:no", async (req, res) => {
 });
 
 router.patch("/tag", async (req, res) => {
-  const { oldTag, newTag } = req.body;
+  let { oldTag, newTag } = req.body;
   const userId = req.user._id;
+
+  newTag = String(newTag).trim();
+  console.log(newTag);
+  if (!newTag) {
+    return res.status(400).send("標籤袂當是空的喔！");
+  }
 
   try {
     const user = await User.findById(userId);

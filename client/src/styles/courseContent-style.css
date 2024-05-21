@@ -190,4 +190,16 @@ body {
 }
 .enter-test-btn:hover {
   background-color: gray;
-} /*# sourceMappingURL=course_style.css.map */
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+}
+
+.form-group .help {
+  display: flex;
+  align-items: center;
+  margin-left: 2px;
+}
+/*# sourceMappingURL=course_style.css.map */
