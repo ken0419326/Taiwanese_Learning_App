@@ -65,6 +65,11 @@ router.post("/save/:ch/:no", async (req, res) => {
   const { tags } = req.body;
   const userId = req.user._id;
 
+  // Check if any tag exceeds 15 characters
+  if (tags.some((tag) => tag.length > 15)) {
+    return res.status(400).send("標籤名稱袂當超過 15 字喔！");
+  }
+
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -143,42 +148,6 @@ router.delete("/save/:ch/:no", async (req, res) => {
     res.status(500).send(error);
   }
 });
-
-// router.delete("/save/:ch/:no", async (req, res) => {
-//   const { ch, no } = req.params;
-//   const { tag } = req.body;
-//   const userId = req.user._id;
-
-//   try {
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).send("User not found");
-//     }
-
-//     let collectionIndex = user.collections.findIndex(
-//       (collection) =>
-//         collection.ch === parseInt(ch) && collection.no === parseInt(no)
-//     );
-
-//     if (collectionIndex !== -1) {
-//       // Remove the tag from the tags array
-//       let collectionEntry = user.collections[collectionIndex];
-//       collectionEntry.tags = collectionEntry.tags.filter((t) => t !== tag);
-
-//       // Remove the collection if its tags array is empty
-//       if (collectionEntry.tags.length === 0) {
-//         user.collections.splice(collectionIndex, 1);
-//       }
-
-//       await user.save(); // Save the updated user document
-//       res.send("Tag removed successfully");
-//     } else {
-//       return res.status(404).send("Collection not found");
-//     }
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// });
 
 router.get("/note/:ch/:no", async (req, res) => {
   const { ch, no } = req.params;

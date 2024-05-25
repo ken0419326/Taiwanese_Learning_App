@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
 import CourseService from "../services/course.service";
 import "../styles/course-style.css";
@@ -14,6 +14,7 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
   const [progressData, setProgressData] = useState({});
   const [contentLengths, setContentLengths] = useState({});
   const [quizLengths, setQuizLengths] = useState({});
+  const [recommendedCourse, setRecommendedCourse] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -71,6 +72,41 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
       setProgressData(progressData);
       setContentLengths(contentLengths);
       setQuizLengths(quizLengths);
+
+      // Determine the recommended course
+      let recommended = null;
+
+      const unfinishedCourses = themeData
+        .map((theme) => {
+          const progress = progressData[theme.ch];
+          const contentLength = contentLengths[theme.ch];
+          const quizLength = quizLengths[theme.ch];
+
+          return {
+            theme,
+            progress,
+            contentLength,
+            quizLength,
+          };
+        })
+        .filter(
+          ({ progress, contentLength, quizLength }) =>
+            progress.maxContentViewed < contentLength ||
+            progress.maxQuizCompleted < quizLength
+        )
+        .sort(
+          (a, b) =>
+            new Date(b.progress.lastViewed) - new Date(a.progress.lastViewed)
+        );
+
+      if (unfinishedCourses.length > 0) {
+        recommended = unfinishedCourses[0].theme;
+      } else {
+        // If no unfinished courses, recommend the not-started course with the smallest ch number
+        recommended = themeData.sort((a, b) => a.ch - b.ch)[0];
+      }
+
+      setRecommendedCourse(recommended);
     };
 
     if (themeData.length > 0) {
@@ -98,7 +134,6 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
       sec = "content";
       no = 1;
     }
-
     navigate(`/course/${sec}/${theme.ch}/${no}`);
   };
 
@@ -115,9 +150,24 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
           </button>
         </div>
       )}
+
       {currentUser && (
         <div>
           <div className="button-container">
+            {currentUser && recommendedCourse && (
+              <div className="welcome">
+                <div className="welcome-msg">
+                  <h2>歡迎轉來！</h2>
+                  <p>咱來位上尾一擺猶未完成的開始！</p>
+                </div>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleLinkClick(recommendedCourse)}
+                >
+                  對　{recommendedCourse.theme}　開始
+                </button>
+              </div>
+            )}
             {themeData.map((theme) => {
               const progress = progressData[theme.ch] || {};
               const maxCourseViewed = progress.maxContentViewed || 0;

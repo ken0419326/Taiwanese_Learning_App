@@ -55,11 +55,10 @@ class CourseService {
     });
   }
 
-
   setMaxCourseCompleted(ch, no) {
     let token = getToken();
     return axios.get(API_URL + "/completed/" + ch + "/" + no, {
-       headers: {
+      headers: {
         Authorization: token,
       },
     });

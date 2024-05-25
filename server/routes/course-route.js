@@ -58,6 +58,7 @@ const checkAndUpdateProgress = async (req, res, next) => {
         maxContentViewed: 0,
         maxQuizViewed: 0,
         maxQuizCompleted: 0,
+        lastViewed: Date.now(),
       };
       user.progress.push(progress);
     }
@@ -89,6 +90,7 @@ const checkAndUpdateProgress = async (req, res, next) => {
       return res.status(400).send("遮無你欲揣的物件喔！");
     }
 
+    progress.lastViewed = Date.now();
     await user.save();
     next();
   } catch (error) {
@@ -151,6 +153,7 @@ router.get("/progress/:ch", async (req, res) => {
         maxContentViewed: 0,
         maxQuizViewed: 0,
         maxQuizCompleted: 0,
+        lastViewed: Date.now(),
       };
       // Add the new progress entry to the user's progress array
       user.progress.push(chapterProgress);

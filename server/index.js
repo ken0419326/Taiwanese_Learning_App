@@ -9,6 +9,7 @@ const authRoute = require("./routes").auth;
 const courseRoute = require("./routes").course;
 const kautianRoute = require("./routes").kautian;
 const vocabRoute = require("./routes").vocab;
+const profileRoute = require("./routes").profile;
 const passport = require("passport");
 require("./config/passport")(passport);
 
@@ -35,6 +36,7 @@ app.use(
 );
 app.use("/api/kautian", kautianRoute);
 app.use("/api/vocab", vocabRoute);
+app.use("/api/profile", profileRoute);
 
 app.listen(8080, () => {
   console.log("Server listening on port 8080...");

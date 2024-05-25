@@ -3,4 +3,5 @@ module.exports = {
   course: require("./course-route"),
   kautian: require("./kautian-route"),
   vocab: require("./vocab-route"),
+  profile: require("./profile-route"),
 };

@@ -1,16 +1,10 @@
-// Load the MongoDB Node.js driver
 const { MongoClient } = require("mongodb");
 const fs = require("fs");
 
-// MongoDB connection URI
 const uri = "mongodb://localhost:27017";
-
-// MongoDB database and collection names
 const dbName = "ohtaibunDB_1";
-const collectionNames = ["coursecontents"];
-
-// Path to the CSV file
-const csvFilePaths = ["./course-content.csv"];
+const collectionNames = ["achievements"];
+const csvFilePaths = ["./profile-achievement.csv"];
 
 for (let i = 0; i < collectionNames.length; i++) {
   importCSV(collectionNames[i], csvFilePaths[i]);
@@ -18,40 +12,49 @@ for (let i = 0; i < collectionNames.length; i++) {
 
 async function importCSV(collectionName, csvFilePath) {
   try {
-    // Connect to MongoDB
     const client = new MongoClient(uri);
     await client.connect();
     console.log("Connected to MongoDB");
 
-    // Select the database
     const db = client.db(dbName);
-
-    // Select the collection
     const collection = db.collection(collectionName);
 
-    // Read the CSV file
+    // Drop the collection if it exists
+    try {
+      await collection.drop();
+      console.log(`Dropped existing collection: ${collectionName}`);
+    } catch (error) {
+      if (error.codeName !== "NamespaceNotFound") {
+        throw error;
+      } else {
+        console.log(
+          `Collection ${collectionName} does not exist. Skipping drop.`
+        );
+      }
+    }
+
     console.log(csvFilePath);
     const csvData = fs.readFileSync(csvFilePath, "utf-8");
 
-    // Convert CSV data to array of objects
     const lines = csvData.trim().split("\n");
     const headers = lines.shift().split(",");
+
     const objects = lines.map((line) => {
-      // const values = line.split(",");
       const values = parseCSVLine(line);
       return headers.reduce((obj, header, index) => {
-        obj[header.trim()] = values[index].trim();
+        obj[header.trim()] =
+          header.trim() === "criterion"
+            ? Number(values[index].trim()) // Convert criterion to number
+            : values[index].trim();
         return obj;
       }, {});
     });
 
-    // Insert data into the collection
     const result = await collection.insertMany(objects);
     console.log(
       `Inserted ${result.insertedCount} documents into ${collectionName}`
     );
 
-    // Close the connection
     await client.close();
     console.log("Disconnected from MongoDB");
   } catch (error) {
@@ -59,7 +62,6 @@ async function importCSV(collectionName, csvFilePath) {
   }
 }
 
-// Function to parse a CSV line correctly
 function parseCSVLine(line) {
   const result = [];
   let current = "";
@@ -69,18 +71,14 @@ function parseCSVLine(line) {
     const char = line[i];
 
     if (char === '"' && insideQuotes && line[i + 1] === '"') {
-      // Handle escaped quotes
-      // current += '"';
+      current += '"';
       i++; // Skip the next quote
     } else if (char === '"') {
-      // Toggle insideQuotes flag
       insideQuotes = !insideQuotes;
     } else if (char === "," && !insideQuotes) {
-      // Field separator
       result.push(current);
       current = "";
     } else {
-      // Regular character
       current += char;
     }
   }

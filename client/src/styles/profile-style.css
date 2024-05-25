@@ -1,11 +1,27 @@
+.circle img {
+  border-radius: 50%;
+}
+
+.small-card {
+  max-height: 150px;
+  margin: 10px;
+}
+
+.large-bold-text {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
 body div.main h2 {
   font-size: 2rem;
-  padding: 20px 0;
+  margin-top: 3rem;
 }
+
 body div.main div.achievement {
   display: flex;
   align-items: center;
 }
+
 body div.main div.achievement div.finished,
 body div.main div.achievement div.unfinished {
   display: flex;

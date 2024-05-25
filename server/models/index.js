@@ -6,4 +6,5 @@ module.exports = {
   kautianVocab: require("./kautianVocab-model"),
   kautianSemantics: require("./kautianSemantics-model"),
   kautianSentence: require("./kautianSentence-model"),
+  achievement: require("./achievement-model"),
 };
