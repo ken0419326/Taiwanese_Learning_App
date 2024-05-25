@@ -197,9 +197,8 @@ body {
   align-items: center;
 }
 
-.form-group .help {
-  display: flex;
-  align-items: center;
-  margin-left: 2px;
+.bi-question-circle {
+  margin-bottom: 3px;
+  margin-left: 3px;
 }
 /*# sourceMappingURL=course_style.css.map */
