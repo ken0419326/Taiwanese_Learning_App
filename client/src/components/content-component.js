@@ -39,7 +39,7 @@ const ContentComponent = () => {
 
   const handleClose = () => {
     setShow(false);
-    setNewTags([]);
+    setNewTags("");
     setSelectedTags([]);
   };
 
@@ -47,30 +47,87 @@ const ContentComponent = () => {
     setNewTags(e.target.value);
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && newTags.trim()) {
-      const newTagsArray = newTags.trim().split(" ");
-      const updatedAvailableTags = availableTags.filter(
-        (tag) => !newTagsArray.includes(tag)
-      );
-      setCurrentTags([...new Set([...currentTags, ...newTagsArray])].sort());
-      setAvailableTags(updatedAvailableTags);
-      setNewTags("");
-      if (e.preventDefault) {
-        e.preventDefault(); // Prevent form submission or other default behavior
+  const handleKeyPress = async (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default form submission behavior
+      if (newTags.trim()) {
+        const newTagsArray = newTags.trim().split(" ");
+        const updatedAvailableTags = availableTags.filter(
+          (tag) => !newTagsArray.includes(tag)
+        );
+
+        const updatedTags = [
+          ...new Set([...currentTags, ...newTagsArray]),
+        ].sort();
+        setCurrentTags(updatedTags);
+        setAvailableTags(updatedAvailableTags);
+        setNewTags("");
+
+        try {
+          await VocabService.saveCollection(ch, no, updatedTags);
+          const response = await AuthService.fetchUserData();
+          localStorage.setItem("user", JSON.stringify(response.data));
+
+          const user = JSON.parse(localStorage.getItem("user")).user;
+          setAllTags(user.tags);
+          const collection = user.collections.find(
+            (collection) => collection.ch == ch && collection.no == no
+          );
+          setCurrentTags(collection ? collection.tags.sort() : []);
+        } catch (error) {
+          console.error("Error saving tags:", error);
+        }
       }
     }
   };
 
-  const handleAddTag = (tagToAdd) => {
-    setCurrentTags([...currentTags, tagToAdd].sort());
-    setAvailableTags(availableTags.filter((tag) => tag !== tagToAdd).sort());
+  const handleAddTag = async (tagToAdd) => {
+    // Update the currentTags state
+    const updatedCurrentTags = [...currentTags, tagToAdd].sort();
+    setCurrentTags(updatedCurrentTags);
+
+    // Update the availableTags state
+    const updatedAvailableTags = availableTags
+      .filter((tag) => tag !== tagToAdd)
+      .sort();
+    setAvailableTags(updatedAvailableTags);
+
+    try {
+      // Save the updated tags to the backend
+      await VocabService.saveCollection(ch, no, updatedCurrentTags);
+
+      // Fetch updated user data from the backend
+      const response = await AuthService.fetchUserData();
+      localStorage.setItem("user", JSON.stringify(response.data));
+      const user = JSON.parse(localStorage.getItem("user")).user;
+
+      // Update allTags state based on the updated user data
+      setAllTags(user.tags);
+    } catch (error) {
+      console.error("Error saving tags:", error);
+    }
   };
 
-  const handleRemoveTag = (tagToRemove) => {
-    setCurrentTags(currentTags.filter((tag) => tag !== tagToRemove));
-    if (allTags.includes(tagToRemove)) {
-      setAvailableTags([...availableTags, tagToRemove].sort());
+  const handleRemoveTag = async (tagToRemove) => {
+    try {
+      // Remove the tag from the backend first
+      await VocabService.removeCollectionTag(ch, no, tagToRemove);
+
+      // Fetch updated user data from the backend
+      const response = await AuthService.fetchUserData();
+      localStorage.setItem("user", JSON.stringify(response.data));
+      const user = JSON.parse(localStorage.getItem("user")).user;
+
+      // Update the current tags and available tags based on the response
+      setCurrentTags(currentTags.filter((tag) => tag !== tagToRemove));
+      setAllTags(user.tags);
+
+      // Check if the tag to remove exists in allTags after updating it
+      if (user.tags.includes(tagToRemove)) {
+        setAvailableTags([...availableTags, tagToRemove].sort());
+      }
+    } catch (error) {
+      console.error("Error removing tag:", error);
     }
   };
 
@@ -149,23 +206,6 @@ const ContentComponent = () => {
     fetchData();
   }, [ch, no]);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        String(newTags).trim() &&
-        modalRef.current &&
-        !modalRef.current.contains(event.target)
-      ) {
-        handleKeyPress({ key: "Enter" });
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [newTags]);
-
   const handlePlayAudio = () => {
     if (audioElement) {
       if (!isPlaying) {
@@ -223,6 +263,24 @@ const ContentComponent = () => {
               <div className="card-text">
                 <p className="hanji" onMouseUp={handleTextSelection}>
                   {contentData.hanji}
+                  <a
+                    className="d-inline-block"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="若共漢字選起來，會當查詢教典內伊的意思喔！"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-question-circle"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                      <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94" />
+                    </svg>
+                  </a>
                 </p>
                 <p>{contentData.lomaji}</p>
                 <p>華語：{contentData.mandarin}</p>
@@ -268,7 +326,7 @@ const ContentComponent = () => {
                           placeholder="新的標籤"
                           value={newTags}
                           onChange={handleTagChange}
-                          onKeyPress={handleKeyPress}
+                          onKeyDown={handleKeyPress}
                         />
                       </Form.Group>
                     </Form>

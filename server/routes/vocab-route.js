@@ -37,6 +37,29 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/count/:tag", async (req, res) => {
+  const { tag } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Count the number of cards with the specified tag
+    const count = user.collections.reduce((total, collection) => {
+      return total + (collection.tags.includes(tag) ? 1 : 0);
+    }, 0);
+
+    // Send the count as a response
+    res.status(200).send({ count });
+  } catch (error) {
+    console.error("Error counting cards:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
 router.post("/save/:ch/:no", async (req, res) => {
   const { ch, no } = req.params;
   const { tags } = req.body;
@@ -44,7 +67,6 @@ router.post("/save/:ch/:no", async (req, res) => {
 
   try {
     const user = await User.findById(userId);
-
     if (!user) {
       return res.status(404).send("User not found");
     }
@@ -83,7 +105,6 @@ router.delete("/save/:ch/:no", async (req, res) => {
 
   try {
     const user = await User.findById(userId);
-
     if (!user) {
       return res.status(404).send("User not found");
     }
@@ -103,6 +124,16 @@ router.delete("/save/:ch/:no", async (req, res) => {
         user.collections.splice(collectionIndex, 1);
       }
 
+      // Check if the tag exists in any other collection
+      const tagExistsInOtherCollections = user.collections.some((collection) =>
+        collection.tags.includes(tag)
+      );
+
+      // If the tag does not exist in any other collection, remove it from user.tags
+      if (!tagExistsInOtherCollections) {
+        user.tags = user.tags.filter((t) => t !== tag);
+      }
+
       await user.save(); // Save the updated user document
       res.send("Tag removed successfully");
     } else {
@@ -112,6 +143,42 @@ router.delete("/save/:ch/:no", async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+// router.delete("/save/:ch/:no", async (req, res) => {
+//   const { ch, no } = req.params;
+//   const { tag } = req.body;
+//   const userId = req.user._id;
+
+//   try {
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).send("User not found");
+//     }
+
+//     let collectionIndex = user.collections.findIndex(
+//       (collection) =>
+//         collection.ch === parseInt(ch) && collection.no === parseInt(no)
+//     );
+
+//     if (collectionIndex !== -1) {
+//       // Remove the tag from the tags array
+//       let collectionEntry = user.collections[collectionIndex];
+//       collectionEntry.tags = collectionEntry.tags.filter((t) => t !== tag);
+
+//       // Remove the collection if its tags array is empty
+//       if (collectionEntry.tags.length === 0) {
+//         user.collections.splice(collectionIndex, 1);
+//       }
+
+//       await user.save(); // Save the updated user document
+//       res.send("Tag removed successfully");
+//     } else {
+//       return res.status(404).send("Collection not found");
+//     }
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
 
 router.get("/note/:ch/:no", async (req, res) => {
   const { ch, no } = req.params;
@@ -173,6 +240,9 @@ router.patch("/tag", async (req, res) => {
   console.log(newTag);
   if (!newTag) {
     return res.status(400).send("標籤袂當是空的喔！");
+  }
+  if (newTag.length > 15) {
+    return res.status(400).send("標籤名稱袂當超過 15 字喔！");
   }
 
   try {
