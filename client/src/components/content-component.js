@@ -305,7 +305,7 @@ const ContentComponent = () => {
                             className="d-inline-block"
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
-                            title="若有毋但一个標籤，會當用 space 分開，才揤 Enter。"
+                            title="一个標籤上長會當有 15 个字，若有毋但一个標籤，會當用 space 分開，才揤 Enter。"
                           >
                             <div className="help"></div>
                             <svg

@@ -17,7 +17,7 @@ require("./config/passport")(passport);
 mongoose
   .connect("mongodb://localhost:27017/ohtaibunDB_1")
   .then(() => {
-    console.log("Connecting to MongoDB...");
+    console.log("Connected to MongoDB...");
   })
   .catch((e) => {
     console.log(e);
