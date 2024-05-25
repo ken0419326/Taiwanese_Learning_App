@@ -39,7 +39,7 @@ const ContentComponent = () => {
 
   const handleClose = () => {
     setShow(false);
-    setNewTags([]);
+    setNewTags("");
     setSelectedTags([]);
   };
 
@@ -47,30 +47,87 @@ const ContentComponent = () => {
     setNewTags(e.target.value);
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && newTags.trim()) {
-      const newTagsArray = newTags.trim().split(" ");
-      const updatedAvailableTags = availableTags.filter(
-        (tag) => !newTagsArray.includes(tag)
-      );
-      setCurrentTags([...new Set([...currentTags, ...newTagsArray])].sort());
-      setAvailableTags(updatedAvailableTags);
-      setNewTags("");
-      if (e.preventDefault) {
-        e.preventDefault(); // Prevent form submission or other default behavior
+  const handleKeyPress = async (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default form submission behavior
+      if (newTags.trim()) {
+        const newTagsArray = newTags.trim().split(" ");
+        const updatedAvailableTags = availableTags.filter(
+          (tag) => !newTagsArray.includes(tag)
+        );
+
+        const updatedTags = [
+          ...new Set([...currentTags, ...newTagsArray]),
+        ].sort();
+        setCurrentTags(updatedTags);
+        setAvailableTags(updatedAvailableTags);
+        setNewTags("");
+
+        try {
+          await VocabService.saveCollection(ch, no, updatedTags);
+          const response = await AuthService.fetchUserData();
+          localStorage.setItem("user", JSON.stringify(response.data));
+
+          const user = JSON.parse(localStorage.getItem("user")).user;
+          setAllTags(user.tags);
+          const collection = user.collections.find(
+            (collection) => collection.ch == ch && collection.no == no
+          );
+          setCurrentTags(collection ? collection.tags.sort() : []);
+        } catch (error) {
+          console.error("Error saving tags:", error);
+        }
       }
     }
   };
 
-  const handleAddTag = (tagToAdd) => {
-    setCurrentTags([...currentTags, tagToAdd].sort());
-    setAvailableTags(availableTags.filter((tag) => tag !== tagToAdd).sort());
+  const handleAddTag = async (tagToAdd) => {
+    // Update the currentTags state
+    const updatedCurrentTags = [...currentTags, tagToAdd].sort();
+    setCurrentTags(updatedCurrentTags);
+
+    // Update the availableTags state
+    const updatedAvailableTags = availableTags
+      .filter((tag) => tag !== tagToAdd)
+      .sort();
+    setAvailableTags(updatedAvailableTags);
+
+    try {
+      // Save the updated tags to the backend
+      await VocabService.saveCollection(ch, no, updatedCurrentTags);
+
+      // Fetch updated user data from the backend
+      const response = await AuthService.fetchUserData();
+      localStorage.setItem("user", JSON.stringify(response.data));
+      const user = JSON.parse(localStorage.getItem("user")).user;
+
+      // Update allTags state based on the updated user data
+      setAllTags(user.tags);
+    } catch (error) {
+      console.error("Error saving tags:", error);
+    }
   };
 
-  const handleRemoveTag = (tagToRemove) => {
-    setCurrentTags(currentTags.filter((tag) => tag !== tagToRemove));
-    if (allTags.includes(tagToRemove)) {
-      setAvailableTags([...availableTags, tagToRemove].sort());
+  const handleRemoveTag = async (tagToRemove) => {
+    try {
+      // Remove the tag from the backend first
+      await VocabService.removeCollectionTag(ch, no, tagToRemove);
+
+      // Fetch updated user data from the backend
+      const response = await AuthService.fetchUserData();
+      localStorage.setItem("user", JSON.stringify(response.data));
+      const user = JSON.parse(localStorage.getItem("user")).user;
+
+      // Update the current tags and available tags based on the response
+      setCurrentTags(currentTags.filter((tag) => tag !== tagToRemove));
+      setAllTags(user.tags);
+
+      // Check if the tag to remove exists in allTags after updating it
+      if (user.tags.includes(tagToRemove)) {
+        setAvailableTags([...availableTags, tagToRemove].sort());
+      }
+    } catch (error) {
+      console.error("Error removing tag:", error);
     }
   };
 
@@ -148,23 +205,6 @@ const ContentComponent = () => {
 
     fetchData();
   }, [ch, no]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        String(newTags).trim() &&
-        modalRef.current &&
-        !modalRef.current.contains(event.target)
-      ) {
-        handleKeyPress({ key: "Enter" });
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [newTags]);
 
   const handlePlayAudio = () => {
     if (audioElement) {
@@ -268,7 +308,7 @@ const ContentComponent = () => {
                           placeholder="新的標籤"
                           value={newTags}
                           onChange={handleTagChange}
-                          onKeyPress={handleKeyPress}
+                          onKeyDown={handleKeyPress}
                         />
                       </Form.Group>
                     </Form>

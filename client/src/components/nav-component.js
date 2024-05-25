@@ -67,7 +67,7 @@ const NavComponent = ({ currentUser, setCurrentUser }) => {
                 {currentUser && (
                   <li className="nav-item">
                     <Link className="nav-link" to="/vocab">
-                      我的字詞
+                      我的收藏
                     </Link>
                   </li>
                 )}
