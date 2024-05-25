@@ -49,6 +49,7 @@ body {
   text-align: center;
   align-items: center;
   justify-content: center;
+  margin-bottom: 10px;
 }
 .card .card-content .basic .card-text {
   text-align: left;
@@ -78,8 +79,11 @@ body {
   text-align: left;
   align-items: center;
   justify-content: center;
-  max-height: 300px;
+  font-size: 12px;
+  max-height: 190px;
+  max-width: 500px;
   overflow-y: auto;
+  margin-bottom: 50px;
 }
 
 .play-btn {
@@ -196,7 +200,6 @@ body {
   display: flex;
   align-items: center;
 }
-
 .bi-question-circle {
   margin-bottom: 3px;
   margin-left: 3px;

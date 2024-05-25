@@ -32,7 +32,9 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                   >
                     <h3>萬事起頭難</h3>
                   </button>
-                  <h4>完成頭一回課程</h4>
+                  <h5 style={{ fontSize: "20px", fontWeight: "normal" }}>
+                    完成頭一回課程
+                  </h5>
                 </div>
               </div>
               <div className="unfinished">
@@ -48,11 +50,13 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                   >
                     <h3>恭喜發財</h3>
                   </button>
-                  <h4>解答五條題目</h4>
+                  <h5 style={{ fontSize: "20px", fontWeight: "normal" }}>
+                    解答五條題目
+                  </h5>
                 </div>
               </div>
             </div>
-            <h2>學習紀錄</h2>
+            <h2 style={{ marginTop: "20px" }}>學習紀錄</h2>
             <div className="record">
               <div className="stat">
                 <div className="day-number-container">
