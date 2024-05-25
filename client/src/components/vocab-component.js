@@ -35,7 +35,11 @@ const VocabComponent = ({ currentUser, setCurrentUser }) => {
   const handleTagRename = (oldTag, newTag) => {
     VocabService.renameTag(oldTag, newTag)
       .then(() => {
-        setTagsData(tagsData.map((tag) => (tag === oldTag ? newTag : tag)));
+        setTagsData((prevTagsData) =>
+          prevTagsData.map((tagData) =>
+            tagData.tag === oldTag ? { ...tagData, tag: newTag } : tagData
+          )
+        );
       })
       .catch((error) => {
         console.error("Error renaming tag: ", error);

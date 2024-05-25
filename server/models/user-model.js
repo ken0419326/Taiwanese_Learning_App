@@ -19,6 +19,11 @@ const userProgressSchema = new Schema({
     type: Number,
     required: true,
   },
+  lastViewed: {
+    type: Date,
+    default: "2000-01-01",
+    required: true,
+  },
 });
 
 const userCollectionSchema = new Schema({
@@ -71,6 +76,7 @@ const userSchema = new Schema({
   collections: {
     type: [userCollectionSchema],
   },
+  achievements: [{ type: Schema.Types.ObjectId, ref: "AchievementSchema" }],
   date: {
     type: Date,
     default: Date.now,
