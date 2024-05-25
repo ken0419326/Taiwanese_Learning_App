@@ -11,6 +11,7 @@ import ChallengeComponent from "./components/challenge-component";
 import EnrollComponent from "./components/enroll-component";
 import ContentComponent from "./components/content-component";
 import QuizComponent from "./components/quiz-component";
+import CollectionComponent from "./components/collection-component";
 import AuthService from "./services/auth.service";
 
 function App() {
@@ -98,6 +99,15 @@ function App() {
               path="/course/quiz/:ch/:no"
               element={
                 <QuizComponent
+                  currentUser={currentUser}
+                  setCurrentUser={setCurrentUser}
+                />
+              }
+            />
+            <Route
+              path="/vocab/:tag"
+              element={
+                <CollectionComponent
                   currentUser={currentUser}
                   setCurrentUser={setCurrentUser}
                 />

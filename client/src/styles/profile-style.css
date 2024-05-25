@@ -1,6 +1,6 @@
 body div.main h2 {
   font-size: 2rem;
-  padding: 20px 0;
+  padding: 13px 0;
 }
 body div.main div.achievement {
   display: flex;
@@ -9,6 +9,7 @@ body div.main div.achievement {
 body div.main div.achievement div.finished,
 body div.main div.achievement div.unfinished {
   display: flex;
+  padding: 0 20px;
   align-items: center;
 }
 body div.main div.achievement div.finished div.circle,
@@ -36,14 +37,14 @@ body div.main div.achievement div.finished div.text h3,
 body div.main div.achievement div.unfinished div.text h3 {
   font-size: 1.5rem;
   padding-bottom: 5px;
-  text-decoration: underline;
+  /*text-decoration: underline;*/
 }
 body div.main div.achievement div.finished div.text h4,
 body div.main div.achievement div.unfinished div.text h4 {
   margin: 10px 0;
 }
 body div.main div.achievement div.unfinished div.text h3,
-body div.main div.achievement div.unfinished div.text h4 {
+body div.main div.achievement div.unfinished div.text h5 {
   color: rgba(128, 128, 128, 0.7);
 }
 body div.main div.record {
@@ -67,9 +68,13 @@ body div.main div.record div.stat .number {
   padding: 5px 10px;
   margin: 5px;
 }
-body div.main div.record div.stat .day .h4,
-body div.main div.record div.stat .number .h4 {
+body div.main div.record div.stat .day h4 {
+  font-size: 24px;
   font-weight: bold;
+}
+
+body div.main div.record div.stat .number h4 {
+  font-size: 20px;
 }
 body div.main div.record div.stat .day {
   text-align: center;
@@ -98,4 +103,7 @@ body div.main div.record div.pro div.pg progress {
   border-radius: 15px;
   /* color: lightgreen;
   background-color: gray; */
+}
+.progress {
+  background-color: rgb(202, 202, 202);
 } /*# sourceMappingURL=dashboardStyles.css.map */

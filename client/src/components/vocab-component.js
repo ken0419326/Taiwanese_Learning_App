@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import KautianService from "../services/kautian.service";
+import { useNavigate, Link } from "react-router-dom";
+import VocabService from "../services/vocab.service";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "../styles/vocab-style.css";
-import $ from "jquery";
 
 const VocabComponent = ({ currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
@@ -10,11 +11,50 @@ const VocabComponent = ({ currentUser, setCurrentUser }) => {
     navigate("/login");
   };
 
+  const [tagsData, setTagsData] = useState([]);
+  useEffect(() => {
+    // Fetch theme data from your service
+    VocabService.getVocabTags()
+      .then((response) => {
+        setTagsData(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching tags data: ", error);
+      });
+  }, []);
+
+  const handleTagRename = (oldTag, newTag) => {
+    VocabService.renameTag(oldTag, newTag)
+      .then(() => {
+        setTagsData(tagsData.map((tag) => (tag === oldTag ? newTag : tag)));
+      })
+      .catch((error) => {
+        console.error("Error renaming tag: ", error);
+        alert(error.response.data);
+      });
+  };
+
+  const handleTagDelete = async (tagToDelete) => {
+    const confirmDelete = window.confirm(`你確定要刪除 "${tagToDelete}" 嗎？`);
+    if (confirmDelete) {
+      try {
+        await VocabService.deleteTag(tagToDelete);
+        // Update the tags data in state to reflect the deletion
+        setTagsData((prevTagsData) =>
+          prevTagsData.filter((tag) => tag !== tagToDelete)
+        );
+      } catch (error) {
+        console.error("Error deleting tag: ", error);
+        alert("Failed to delete tag. Please try again.");
+      }
+    }
+  };
+
   return (
     <div style={{ padding: "3rem" }}>
       {!currentUser && (
         <div>
-          <p>愛先登入才看會到課程喔！</p>
+          <p>愛先登入才看會到卡片喔！</p>
           <button
             className="btn btn-primary btn-lg"
             onClick={handleTakeToLogin}
@@ -23,90 +63,32 @@ const VocabComponent = ({ currentUser, setCurrentUser }) => {
           </button>
         </div>
       )}
-
       {currentUser && (
         <div>
-          <div className="main">
-            <header>
-              <div className="title">
-                <h1>學臺文</h1>
-              </div>
-            </header>
-            <main>
-              <h2>
-                <i className="fa-solid fa-tag"></i>標籤管理
-              </h2>
-              <div className="add">
-                <button
-                  id="add"
-                  type="button"
-                  className="btn"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  data-bs-whatever="@mdo"
-                >
-                  增添
-                </button>
-              </div>
-              <ul></ul>
-            </main>
-          </div>
-
-          <div
-            className="modal fade"
-            id="exampleModal"
-            tabindex="-1"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-          >
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h1 className="modal-title fs-5" id="exampleModalLabel">
-                    增添標籤
-                  </h1>
+          <div className="button-container">
+            {tagsData.map((tag) => (
+              <div className="tag-container" key={tag}>
+                <Link to={`/vocab/${tag}`} className="nav-link vertical-btn">
+                  <div className="tag-text">{tag}</div>
+                </Link>
+                <div className="actions">
                   <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  <form>
-                    <div className="mb-3">
-                      <label for="tag-name" className="col-form-label">
-                        標籤名稱
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="tag-name"
-                      />
-                    </div>
-                  </form>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    data-bs-dismiss="modal"
+                    className="pen-btn"
+                    onClick={() =>
+                      handleTagRename(tag, prompt("新的標籤名稱："))
+                    }
                   >
-                    關起來
+                    <FontAwesomeIcon icon={faPen} />
                   </button>
                   <button
-                    id="enter"
-                    type="button"
-                    className="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                    data-bs-whatever="@mdo"
+                    className="remove-btn"
+                    onClick={() => handleTagDelete(tag)}
                   >
-                    增添標籤
+                    <FontAwesomeIcon icon={faTimes} />
                   </button>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       )}

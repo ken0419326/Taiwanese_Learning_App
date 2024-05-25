@@ -63,4 +63,34 @@ router.post("/login", async (req, res) => {
   });
 });
 
+const authMiddleware = async (req, res, next) => {
+  const token =
+    req.headers.authorization && req.headers.authorization.split(" ")[1];
+  if (!token) {
+    return res.status(401).send("Access denied. No token provided.");
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.PASSPORT_SECRET);
+    req.user = await User.findById(decoded._id).select("-password");
+    next(); // Call next() only if the token is valid and user is found
+  } catch (ex) {
+    return res.status(400).send("Invalid token.");
+  }
+};
+
+router.use(authMiddleware);
+
+router.get("/info", async (req, res) => {
+  const _id = req.user._id;
+  const foundUser = await User.findOne({ _id: _id });
+  const tokenObject = { _id: foundUser._id, email: foundUser.email };
+  const token = jwt.sign(tokenObject, process.env.PASSPORT_SECRET);
+  return res.send({
+    msg: "Update successfully.",
+    token: "JWT " + token,
+    user: foundUser,
+  });
+});
+
 module.exports = router;
