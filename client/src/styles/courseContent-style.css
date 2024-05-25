@@ -18,6 +18,7 @@ body {
   min-height: calc(100vh - 80px);
   transition: transform 0.3s ease;
   overflow-x: hidden;
+  margin-top: 10px;
 }
 
 .card {
@@ -40,7 +41,6 @@ body {
   -webkit-user-select: text;
   -moz-user-select: text;
   user-select: text;
-  height: 100%;
   width: 500px;
 }
 .card .card-content .basic {
@@ -200,10 +200,8 @@ body {
   display: flex;
   align-items: center;
 }
-
-.form-group .help {
-  display: flex;
-  align-items: center;
-  margin-left: 2px;
+.bi-question-circle {
+  margin-bottom: 3px;
+  margin-left: 3px;
 }
 /*# sourceMappingURL=course_style.css.map */

@@ -12,16 +12,25 @@ const VocabComponent = ({ currentUser, setCurrentUser }) => {
   };
 
   const [tagsData, setTagsData] = useState([]);
+
   useEffect(() => {
-    // Fetch theme data from your service
-    VocabService.getVocabTags()
-      .then((response) => {
-        setTagsData(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching tags data: ", error);
-      });
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await VocabService.getVocabTags();
+      const tagsWithCounts = await Promise.all(
+        response.data.map(async (tag) => {
+          const countResponse = await VocabService.getVocabCount(tag);
+          return { tag, count: countResponse.data.count };
+        })
+      );
+      setTagsData(tagsWithCounts);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  };
 
   const handleTagRename = (oldTag, newTag) => {
     VocabService.renameTag(oldTag, newTag)
@@ -35,18 +44,25 @@ const VocabComponent = ({ currentUser, setCurrentUser }) => {
   };
 
   const handleTagDelete = async (tagToDelete) => {
-    const confirmDelete = window.confirm(`你確定要刪除 "${tagToDelete}" 嗎？`);
+    const confirmDelete = window.confirm(`你敢確定欲刪除 "${tagToDelete}"？`);
     if (confirmDelete) {
       try {
         await VocabService.deleteTag(tagToDelete);
-        // Update the tags data in state to reflect the deletion
+        // Remove the tag from the tagsData state
         setTagsData((prevTagsData) =>
-          prevTagsData.filter((tag) => tag !== tagToDelete)
+          prevTagsData.filter((tag) => tag.tag !== tagToDelete)
         );
       } catch (error) {
         console.error("Error deleting tag: ", error);
         alert("Failed to delete tag. Please try again.");
       }
+    }
+  };
+
+  const handleRenameClick = (tag) => {
+    const newTag = prompt("新的標籤名稱：", tag);
+    if (newTag && newTag.trim() !== "" && newTag !== tag) {
+      handleTagRename(tag, newTag);
     }
   };
 
@@ -66,23 +82,24 @@ const VocabComponent = ({ currentUser, setCurrentUser }) => {
       {currentUser && (
         <div>
           <div className="button-container">
-            {tagsData.map((tag) => (
-              <div className="tag-container" key={tag}>
-                <Link to={`/vocab/${tag}`} className="nav-link vertical-btn">
-                  <div className="tag-text">{tag}</div>
+            {tagsData.map((tagData, index) => (
+              <div className="tag-container" key={index}>
+                <Link
+                  to={`/vocab/${tagData.tag}`}
+                  className="nav-link vertical-btn"
+                >
+                  <div className="tag-text">{`${tagData.tag} (${tagData.count})`}</div>
                 </Link>
                 <div className="actions">
                   <button
                     className="pen-btn"
-                    onClick={() =>
-                      handleTagRename(tag, prompt("新的標籤名稱："))
-                    }
+                    onClick={() => handleRenameClick(tagData.tag)}
                   >
                     <FontAwesomeIcon icon={faPen} />
                   </button>
                   <button
                     className="remove-btn"
-                    onClick={() => handleTagDelete(tag)}
+                    onClick={() => handleTagDelete(tagData.tag)}
                   >
                     <FontAwesomeIcon icon={faTimes} />
                   </button>

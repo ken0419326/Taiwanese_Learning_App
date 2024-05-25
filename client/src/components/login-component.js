@@ -43,7 +43,7 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
         </div>
         <br />
         <div className="form-group">
-          <label htmlFor="password">密碼：</label>
+          <label htmlFor="password">暗號：</label>
           <input
             onChange={handlePassword}
             type="password"

@@ -20,6 +20,15 @@ class VocabService {
     });
   }
 
+  getVocabCount(tag) {
+    let token = getToken();
+    return axios.get(API_URL + "/count/" + tag, {
+      headers: {
+        Authorization: token,
+      },
+    });
+  }
+
   saveCollection(ch, no, tags) {
     let token = getToken();
     return axios.post(
@@ -64,6 +73,7 @@ class VocabService {
       }
     );
   }
+
   renameTag(oldTag, newTag) {
     let token = getToken();
     return axios.patch(
