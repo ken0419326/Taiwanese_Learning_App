@@ -3,8 +3,24 @@ const fs = require("fs");
 
 const uri = "mongodb://localhost:27017";
 const dbName = "ohtaibunDB_1";
-const collectionNames = ["coursequizzes"];
-const csvFilePaths = ["./course-quiz.csv"];
+const collectionNames = [
+  "achievements",
+  "coursecontents",
+  "coursequizzes",
+  "coursethemes",
+  "kautiansemantics",
+  "kautiansentences",
+  "kautianvocabs",
+];
+const csvFilePaths = [
+  "./profile-achievement.csv",
+  "./course-content.csv",
+  "./course-quiz.csv",
+  "./course-theme.csv",
+  "./kautian-semantics.csv",
+  "./kautian-sentence.csv",
+  "./kautian-vocab.csv",
+];
 
 for (let i = 0; i < collectionNames.length; i++) {
   importCSV(collectionNames[i], csvFilePaths[i]);
@@ -40,7 +56,10 @@ async function importCSV(collectionName, csvFilePath) {
     const headers = lines.shift().split(",");
 
     const objects = lines.map((line) => {
-      const values = parseCSVLine(line);
+      const values =
+        collectionName === "kautiansentences"
+          ? parseKautianSentenceCSVLine(line)
+          : parseCSVLine(line);
       return headers.reduce((obj, header, index) => {
         obj[header.trim()] =
           header.trim() === "criterion"
@@ -85,4 +104,43 @@ function parseCSVLine(line) {
 
   result.push(current); // Push the last field
   return result;
+}
+
+function parseKautianSentenceCSVLine(line) {
+  const result = [];
+  let current = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+
+    if (char === '"' && insideQuotes) {
+      if (line[i + 1] === '"') {
+        // This is an escaped double-quote
+        current += '"';
+        i++; // Skip the next quote
+      } else {
+        // This is the closing quote
+        insideQuotes = false;
+      }
+    } else if (char === '"' && !insideQuotes) {
+      // This is the opening quote
+      insideQuotes = true;
+    } else if (char === "," && !insideQuotes) {
+      // This is a field separator
+      result.push(current);
+      current = "";
+    } else {
+      // Any other character
+      current += char;
+    }
+  }
+
+  // Add the last field
+  result.push(current);
+
+  // Remove surrounding quotes from each field
+  return result.map((field) => {
+    return field.replace(/^"(.*)"$/, "$1");
+  });
 }

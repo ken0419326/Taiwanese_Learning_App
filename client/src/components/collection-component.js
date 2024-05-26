@@ -208,7 +208,8 @@ const CollectionComponent = () => {
                       (definition, idx) => (
                         <div key={idx} className="definition">
                           {definition.vocab && (
-                            <strong>
+                            <strong style={{ fontSize: "1.15rem" }}>
+                              <br />
                               {definition.vocab.hanji} {definition.vocab.lomaji}
                             </strong>
                           )}
@@ -216,7 +217,7 @@ const CollectionComponent = () => {
                             definition.semantics.map((sem, semIndex) => (
                               <div key={semIndex}>
                                 {sem.pos && sem.explanation && (
-                                  <p>
+                                  <p style={{ marginTop: "0.5rem" }}>
                                     【{sem.pos}】{sem.explanation}
                                   </p>
                                 )}

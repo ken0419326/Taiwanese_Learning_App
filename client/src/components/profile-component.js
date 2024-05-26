@@ -81,14 +81,17 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                   </div>
                 </div>
               )}
+              {nextAchievement && <i className="fa-solid fa-right-long"></i>}
               {nextAchievement && (
-                <div className="unfinished">
-                  <div className="circle">
-                    <img src={nextIcon} />
-                  </div>
-                  <div className="text">
-                    <h3>{nextAchievement.title}</h3>
-                    <h4>{`完成 ${nextAchievement.criterion} 課。`}</h4>
+                <div>
+                  <div className="unfinished">
+                    <div className="circle">
+                      <img src={nextIcon} />
+                    </div>
+                    <div className="text">
+                      <h3>{nextAchievement.title}</h3>
+                      <h4>{`完成 ${nextAchievement.criterion} 課。`}</h4>
+                    </div>
                   </div>
                 </div>
               )}

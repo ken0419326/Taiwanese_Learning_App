@@ -34,40 +34,42 @@ const RegisterComponent = () => {
     <div style={{ padding: "3rem" }} className="col-md-12">
       <div>
         {message && <div className="alert alert-danger">{message}</div>}
-        <div>
-          <label htmlFor="username">用戶名稱:</label>
-          <input
-            onChange={handleUsername}
-            type="text"
-            className="form-control"
-            name="username"
-          />
+        <div className="input-form-groups">
+          <div className="input-form-group">
+            <label htmlFor="username">用戶名稱：</label>
+            <input
+              onChange={handleUsername}
+              type="text"
+              className="form-control"
+              name="username"
+            />
+          </div>
+          <br />
+          <div className="input-form-group">
+            <label htmlFor="email">電子批箱：</label>
+            <input
+              onChange={handleEmail}
+              type="text"
+              className="form-control"
+              name="email"
+            />
+          </div>
+          <br />
+          <div className="input-form-group">
+            <label htmlFor="password">密碼：</label>
+            <input
+              onChange={handlePassword}
+              type="password"
+              className="form-control"
+              name="password"
+              placeholder="至少愛 6 個英文抑是數字"
+            />
+          </div>
+          <br />
+          <button onClick={handleRegister} className="btn btn-primary">
+            <span>註冊會員</span>
+          </button>
         </div>
-        <br />
-        <div className="form-group">
-          <label htmlFor="email">電子批箱：</label>
-          <input
-            onChange={handleEmail}
-            type="text"
-            className="form-control"
-            name="email"
-          />
-        </div>
-        <br />
-        <div className="form-group">
-          <label htmlFor="password">密碼：</label>
-          <input
-            onChange={handlePassword}
-            type="password"
-            className="form-control"
-            name="password"
-            placeholder="至少愛 6 個英文抑是數字"
-          />
-        </div>
-        <br />
-        <button onClick={handleRegister} className="btn btn-primary">
-          <span>註冊會員</span>
-        </button>
       </div>
     </div>
   );
