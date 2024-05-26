@@ -3,10 +3,14 @@
   margin: 0;
 }
 
+.btn-custom2 {
+  background-color: #f0f0f0;
+  text-align: center;
+}
+
 .main {
   display: flex;
   flex-direction: column;
-  /* height: 30rem; */
   align-items: center;
   height: 65vh;
 }
@@ -16,13 +20,13 @@
   padding: 0;
 }
 .main .flashcard-container {
-  top: 30%;
-  position: absolute;
+  margin-top: 10px;
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   width: 50%;
-  height: 50%;
+  height: 80%;
 }
 .main .flashcard-container .top {
   z-index: 1000;
