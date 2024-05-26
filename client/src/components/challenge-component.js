@@ -22,8 +22,21 @@ const ChallengeComponent = ({ currentUser, setCurrentUser }) => {
   const [buttonsDisabled, setButtonsDisabled] = useState(true);
   const navigate = useNavigate();
 
+  const tooltipTriggerList = [].slice.call(
+    document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  );
+
+  useEffect(() => {
+    tooltipTriggerList.map((tooltipTriggerEl) => {
+      return new window.bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  }, [flashcardsData, flippedCards]);
+
   useEffect(() => {
     fetchUserCollections();
+    tooltipTriggerList.map((tooltipTriggerEl) => {
+      return new window.bootstrap.Tooltip(tooltipTriggerEl);
+    });
   }, [currentUser]);
 
   const fetchUserCollections = async () => {
@@ -303,10 +316,11 @@ const ChallengeComponent = ({ currentUser, setCurrentUser }) => {
                   {flippedCards === "" ? "題目" : "解答"}
                   <button
                     type="button"
-                    class="btn btn-custom2"
+                    className="btn btn-custom2"
                     data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    title="Space = 反頁，↑ = 轉頂一頁，← = 著閣複習，→ = 我會曉矣。"
+                    data-bs-placement="right"
+                    style={{ cursor: "help" }}
+                    title="解答看了若選「著閣複習」，彼條題目出現頻率會較懸喔！"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

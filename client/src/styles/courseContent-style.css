@@ -71,10 +71,6 @@ body {
   margin-left: auto;
 }
 
-.modal-p {
-  margin: 10px 0px;
-}
-
 .card .card-content .detailed {
   flex-grow: 1;
   text-align: left;
@@ -199,8 +195,4 @@ body {
 .form-group {
   display: flex;
   align-items: center;
-}
-.bi-question-circle {
-  margin-bottom: 3px;
-  margin-left: 3px;
 }
