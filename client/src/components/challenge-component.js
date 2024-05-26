@@ -38,7 +38,7 @@ const ChallengeComponent = ({ currentUser, setCurrentUser }) => {
             const noteResponse = await ChallengeService.getNote(ch, no);
             const note = noteResponse.data;
             return {
-              front: mandarin,
+              front: `「${mandarin}」的臺語是啥物？`,
               back: `${hanji}\n${lomaji}\n華語：${mandarin}${
                 note ? `\n筆記：${note}` : ""
               }`,
@@ -53,10 +53,12 @@ const ChallengeComponent = ({ currentUser, setCurrentUser }) => {
     }
   };
 
-  const handlePlayAudio = (audioUrl, event) => {
-    event.stopPropagation();
+  const handlePlayAudio = (audioUrl, e) => {
+    e.stopPropagation();
     const audioElement = new Audio(audioUrl);
     audioElement.play();
+
+    document.activeElement.blur();
   };
 
   useEffect(() => {
@@ -318,6 +320,10 @@ const ChallengeComponent = ({ currentUser, setCurrentUser }) => {
                     </svg>
                   </a>
                 </h2>
+                <p>
+                  共卡片點落起抑是揤 space 著會當看
+                  {flippedCards === "" ? "解答" : "題目"}！
+                </p>
                 <div className="flashcard-container" id="flashcard-container">
                   {renderFlashcard()}
                 </div>

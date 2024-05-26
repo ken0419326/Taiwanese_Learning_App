@@ -51,19 +51,19 @@ const ContentComponent = () => {
     if (e.key === "Enter") {
       e.preventDefault(); // Prevent default form submission behavior
       if (newTags.trim()) {
-        const newTagsArray = newTags.trim().split(" ");
-        const updatedAvailableTags = availableTags.filter(
-          (tag) => !newTagsArray.includes(tag)
-        );
-
-        const updatedTags = [
-          ...new Set([...currentTags, ...newTagsArray]),
-        ].sort();
-        setCurrentTags(updatedTags);
-        setAvailableTags(updatedAvailableTags);
-        setNewTags("");
-
         try {
+          const newTagsArray = newTags.trim().split(" ");
+          const updatedAvailableTags = availableTags.filter(
+            (tag) => !newTagsArray.includes(tag)
+          );
+
+          const updatedTags = [
+            ...new Set([...currentTags, ...newTagsArray]),
+          ].sort();
+          setCurrentTags(updatedTags);
+          setAvailableTags(updatedAvailableTags);
+          setNewTags("");
+
           await VocabService.saveCollection(ch, no, updatedTags);
           const response = await AuthService.fetchUserData();
           localStorage.setItem("user", JSON.stringify(response.data));
@@ -299,8 +299,9 @@ const ContentComponent = () => {
                     <Form>
                       <Form.Group controlId="formTag">
                         <div className="form-group">
-                          <p className="modal-p">創建新的標籤 </p>
-
+                          <p className="modal-p">
+                            創建新的標籤（袂當超過 15 字，完成愛揤 Enter）{" "}
+                          </p>
                           <a
                             className="d-inline-block"
                             data-bs-toggle="tooltip"
@@ -383,7 +384,7 @@ const ContentComponent = () => {
               {definitions.map((definition, index) => (
                 <div key={index} className="definition">
                   {definition.vocab && (
-                    <strong style={{ fontSize: "17px" }}>
+                    <strong style={{ fontSize: "1.15rem" }}>
                       <br />
                       {definition.vocab.hanji} {definition.vocab.lomaji}
                     </strong>
@@ -392,7 +393,7 @@ const ContentComponent = () => {
                     definition.semantics.map((sem, semIndex) => (
                       <div key={semIndex}>
                         {sem.pos && sem.explanation && (
-                          <p style={{ marginTop: "7px" }}>
+                          <p style={{ marginTop: "0.5rem" }}>
                             <strong>【{sem.pos}】</strong>
                             {sem.explanation}
                           </p>

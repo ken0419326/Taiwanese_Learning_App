@@ -50,7 +50,7 @@ body {
   text-align: center;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  height: 100%;
 }
 .card .card-content .basic .card-text {
   text-align: left;
@@ -75,8 +75,7 @@ body {
   text-align: left;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  max-height: 190px;
+  max-height: 300px;
   max-width: 500px;
   overflow-y: auto;
   margin-bottom: 50px;

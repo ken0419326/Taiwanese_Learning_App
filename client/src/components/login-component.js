@@ -32,27 +32,27 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
     <div style={{ padding: "3rem" }} className="col-md-12">
       <div>
         {message && <div className="alert alert-danger">{message}</div>}
-        <div className="form-group">
-          <label htmlFor="username">電子批箱：</label>
-          <input
-            onChange={handleEmail}
-            type="text"
-            className="form-control"
-            name="email"
-          />
-        </div>
-        <br />
-        <div className="form-group">
-          <label htmlFor="password">暗號：</label>
-          <input
-            onChange={handlePassword}
-            type="password"
-            className="form-control"
-            name="password"
-          />
-        </div>
-        <br />
-        <div className="form-group">
+        <div className="input-form-groups">
+          <div className="input-form-group">
+            <label htmlFor="username">電子批箱：</label>
+            <input
+              onChange={handleEmail}
+              type="text"
+              className="form-control"
+              name="email"
+            />
+          </div>
+          <br />
+          <div className="input-form-group">
+            <label htmlFor="password">暗號：</label>
+            <input
+              onChange={handlePassword}
+              type="password"
+              className="form-control"
+              name="password"
+            />
+          </div>
+          <br />
           <button onClick={handleLogin} className="btn btn-primary btn-block">
             <span>登入系統</span>
           </button>
