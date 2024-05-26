@@ -11,6 +11,11 @@ body {
   user-select: none;
 }
 
+.btn-custom {
+  background-color: white;
+  text-align: center;
+}
+
 .card-container {
   display: flex;
   justify-content: center;
