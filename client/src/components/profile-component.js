@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
-import AuthService from "../services/auth.service";
+import { Row, Col, Card } from "react-bootstrap";
 import ProfileService from "../services/profile.service";
 import "../styles/profile-style.css";
 
 // Dynamically import all icons
 const importAll = (r) => {
   let icons = {};
-  r.keys().forEach((item, index) => {
+  r.keys().forEach((item) => {
     icons[item.replace("./", "")] = r(item);
   });
   return icons;
@@ -31,7 +30,6 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
       ProfileService.getUserProgress()
         .then((response) => {
           setUserProgress(response.data);
-          console.log(response.data);
         })
         .catch((error) => {
           console.error("Error fetching user progress:", error);

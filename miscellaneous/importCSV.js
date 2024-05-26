@@ -3,8 +3,8 @@ const fs = require("fs");
 
 const uri = "mongodb://localhost:27017";
 const dbName = "ohtaibunDB_1";
-const collectionNames = ["achievements"];
-const csvFilePaths = ["./profile-achievement.csv"];
+const collectionNames = ["coursequizzes"];
+const csvFilePaths = ["./course-quiz.csv"];
 
 for (let i = 0; i < collectionNames.length; i++) {
   importCSV(collectionNames[i], csvFilePaths[i]);

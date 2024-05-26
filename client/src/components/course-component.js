@@ -78,20 +78,21 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
 
       const unfinishedCourses = themeData
         .map((theme) => {
-          const progress = progressData[theme.ch];
-          const contentLength = contentLengths[theme.ch];
-          const quizLength = quizLengths[theme.ch];
+          const progress = progressData[theme.ch] || {
+            maxQuizCompleted: 0,
+            lastViewed: null,
+          };
+          const quizLength = quizLengths[theme.ch] || 0;
 
           return {
             theme,
             progress,
-            contentLength,
             quizLength,
           };
         })
         .filter(
-          ({ progress, contentLength, quizLength }) =>
-            progress.maxContentViewed < contentLength ||
+          ({ progress, quizLength }) =>
+            progress.maxContentViewed != 0 &&
             progress.maxQuizCompleted < quizLength
         )
         .sort(
@@ -102,8 +103,15 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
       if (unfinishedCourses.length > 0) {
         recommended = unfinishedCourses[0].theme;
       } else {
-        // If no unfinished courses, recommend the not-started course with the smallest ch number
-        recommended = themeData.sort((a, b) => a.ch - b.ch)[0];
+        // If no unfinished courses, recommend the not-started (progress.maxContentViewed == 0) course with the smallest ch number
+        const notStartedCourses = themeData.filter((theme) => {
+          const progress = progressData[theme.ch] || { maxContentViewed: 0 };
+          return progress.maxContentViewed === 0;
+        });
+
+        recommended =
+          notStartedCourses.sort((a, b) => a.ch - b.ch)[0] ||
+          themeData.sort((a, b) => a.ch - b.ch)[0];
       }
 
       setRecommendedCourse(recommended);
