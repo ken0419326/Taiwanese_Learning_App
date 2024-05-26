@@ -54,11 +54,6 @@ body {
 .card .card-content .basic .card-text {
   text-align: left;
 }
-/* .card .card-content .basic .card-text .hanji {
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  user-select: text;
-} */
 
 .tag-item {
   display: flex;
@@ -204,4 +199,3 @@ body {
   margin-bottom: 3px;
   margin-left: 3px;
 }
-/*# sourceMappingURL=course_style.css.map */

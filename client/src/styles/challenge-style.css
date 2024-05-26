@@ -6,18 +6,23 @@
 .main {
   display: flex;
   flex-direction: column;
-  height: 30rem;
+  /* height: 30rem; */
   align-items: center;
+  height: 65vh;
 }
 .main h2 {
   font-size: 2.5rem;
+  margin: 0;
+  padding: 0;
 }
 .main .flashcard-container {
+  top: 30%;
+  position: absolute;
   display: flex;
   flex-wrap: wrap;
-  width: 50rem;
-  height: 25rem;
-  overflow: hidden;
+  justify-content: center;
+  width: 50%;
+  height: 50%;
 }
 .main .flashcard-container .top {
   z-index: 1000;
@@ -30,13 +35,13 @@
 }
 .main .flashcard-container .flashcard {
   position: absolute;
-  width: 50rem;
-  height: 25rem;
-  background-color: #aacbe0;
+  width: 90%;
+  height: 90%;
+  background-color: rgba(255, 255, 255, 1);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  margin: 1rem;
+  /* margin: 1rem; */
   perspective: 1000px;
   transition: transform ease;
   cursor: pointer;
@@ -66,7 +71,7 @@
   transition: transform 0.5s;
 }
 .main .flashcard-container .flashcard .front {
-  background-color: #aacbe0;
+  /* background-color: #999; */
   transform: rotateY(0deg);
   z-index: 2; /* 確保正面在頂部 */
 }
@@ -75,7 +80,7 @@
   left: 3rem; /* 圖標相對於 .front 的左側 */
 }
 .main .flashcard-container .flashcard .back {
-  background-color: #7fe7aa;
+  /* background-color: #dddddd; */
   transform: rotateY(180deg);
   z-index: 1; /* 確保背面在底部 */
 }
@@ -127,12 +132,12 @@
 }
 @keyframes slideOutRight {
   to {
-    transform: translate(400px, 0);
+    transform: translate(300px, 0);
   }
 }
 @keyframes slideOutLeft {
   to {
-    transform: translate(-500px, 0);
+    transform: translate(-300px, 0);
   }
 }
 @keyframes slideBack {
@@ -155,30 +160,38 @@
 
 @keyframes changeColor {
   to {
-    background-color: rgba(255, 255, 255, 0); /* 最终顏色 */
+    background-color: rgba(255, 255, 255, 0);
     border-color: rgba(255, 255, 255, 0);
     color: rgba(255, 255, 255, 0);
   }
 }
-body footer {
+
+footer {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 5rem;
-
+  justify-content: center;
+  margin-top: 2rem;
   height: 4rem;
 }
-body footer .footer-button {
-  background-color: #a9d7f5;
+footer .footer-button {
+  color: white;
+  background-color: #777;
   border: none;
   padding: 1rem 2rem;
-  font-size: 16px;
+  font-size: 1rem;
   border-radius: 5px;
-  margin: 0rem 10vw;
+  margin: 0rem 2rem;
   transition: background-color 0.3s;
   cursor: pointer;
 }
-body footer .footer-button:hover {
-  background-color: #2980b9;
-} /*# sourceMappingURL=challenge.css.map */
+footer .footer-button:hover {
+  background-color: #333;
+  color: white;
+}
+
+footer .footer-button:disabled {
+  background-color: #d6d6d6;
+  color: white;
+  cursor: auto;
+}
