@@ -171,7 +171,7 @@ const QuizComponent = () => {
             <button
               className="nav-link next-btn"
               onClick={() => {
-                alert(`恭喜完成第 ${ch} 單元！`);
+                alert(`恭喜完成第 ${ch} 課！`);
                 Navigate(`/course`);
               }}
             >

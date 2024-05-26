@@ -251,7 +251,7 @@ const ContentComponent = () => {
       <div id="card-container" className="card-container">
         <div className="card">
           <div className="card-content">
-            <div className="basic">
+            <div className="basic" style={{ marginTop: "20px" }}>
               <audio id="audio" src={contentData.audio}></audio>
               <button
                 id="play-btn"
@@ -383,7 +383,8 @@ const ContentComponent = () => {
               {definitions.map((definition, index) => (
                 <div key={index} className="definition">
                   {definition.vocab && (
-                    <strong>
+                    <strong style={{ fontSize: "17px" }}>
+                      <br />
                       {definition.vocab.hanji} {definition.vocab.lomaji}
                     </strong>
                   )}
@@ -391,8 +392,9 @@ const ContentComponent = () => {
                     definition.semantics.map((sem, semIndex) => (
                       <div key={semIndex}>
                         {sem.pos && sem.explanation && (
-                          <p>
-                            【{sem.pos}】{sem.explanation}
+                          <p style={{ marginTop: "7px" }}>
+                            <strong>【{sem.pos}】</strong>
+                            {sem.explanation}
                           </p>
                         )}
                         {sem.sentences &&

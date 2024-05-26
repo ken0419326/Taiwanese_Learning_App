@@ -42,6 +42,7 @@ body {
   -moz-user-select: text;
   user-select: text;
   width: 500px;
+  height: 100%;
 }
 .card .card-content .basic {
   display: flex;
@@ -117,7 +118,7 @@ body {
 
 .previous-btn {
   background-color: #555;
-  color: white;
+  color: white !important;
   border: none;
   padding: 10px 20px;
   text-align: center;
@@ -136,7 +137,7 @@ body {
 
 .next-btn {
   background-color: #555;
-  color: white;
+  color: white !important;
   border: none;
   padding: 10px 20px;
   text-align: center;
@@ -155,7 +156,7 @@ body {
 
 .leave-test-btn {
   background-color: #555;
-  color: white;
+  color: white !important;
   border: none;
   padding: 10px 20px;
   text-align: center;
@@ -174,7 +175,7 @@ body {
 
 .enter-test-btn {
   background-color: #333;
-  color: white;
+  color: white !important;
   border: none;
   padding: 10px 20px;
   text-align: center;

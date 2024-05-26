@@ -14,7 +14,8 @@
 
 body div.main h2 {
   font-size: 2rem;
-  margin-top: 3rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 body div.main div.achievement {

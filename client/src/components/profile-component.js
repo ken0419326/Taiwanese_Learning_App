@@ -77,7 +77,7 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                   </div>
                   <div className="text">
                     <h3>{bestAchievement.title}</h3>
-                    <h4>{`完成 ${bestAchievement.criterion} 節課。`}</h4>
+                    <h4>{`完成 ${bestAchievement.criterion} 課。`}</h4>
                   </div>
                 </div>
               )}
@@ -88,7 +88,7 @@ const ProfileComponent = ({ currentUser, setCurrentUser }) => {
                   </div>
                   <div className="text">
                     <h3>{nextAchievement.title}</h3>
-                    <h4>{`完成 ${nextAchievement.criterion} 節課。`}</h4>
+                    <h4>{`完成 ${nextAchievement.criterion} 課。`}</h4>
                   </div>
                 </div>
               )}
