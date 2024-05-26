@@ -320,7 +320,7 @@ const ChallengeComponent = ({ currentUser, setCurrentUser }) => {
                     </svg>
                   </a>
                 </h2>
-                <p>
+                <p className="hint">
                   共卡片點落起抑是揤 space 著會當看
                   {flippedCards === "" ? "解答" : "題目"}！
                 </p>
