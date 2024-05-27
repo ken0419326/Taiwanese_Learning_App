@@ -5,7 +5,7 @@ const User = require("../models").user;
 const CourseContent = require("../models").courseContent; // Assuming this is defined
 
 router.use((req, res, next) => {
-  console.log("Profile route received a request...");
+  console.log("Challenge route received a request...");
   next();
 });
 
