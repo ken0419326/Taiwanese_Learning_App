@@ -1,0 +1,198 @@
+p {
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.btn-custom {
+  background-color: white;
+  text-align: center;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  transition: transform 0.3s ease;
+  overflow-x: hidden;
+  margin-top: 10px;
+}
+
+.card {
+  position: relative;
+  width: 800px;
+  height: 400px;
+  background-color: #fff;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.card .card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+  width: 500px;
+  height: 100%;
+}
+.card .card-content .basic {
+  display: flex;
+  flex-grow: 1;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.card .card-content .basic .card-text {
+  text-align: left;
+}
+
+.tag-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.remove-btn {
+  margin-left: auto;
+}
+
+.card .card-content .detailed {
+  flex-grow: 1;
+  text-align: left;
+  align-items: center;
+  justify-content: center;
+  max-height: 300px;
+  max-width: 500px;
+  overflow-y: auto;
+  margin-bottom: 50px;
+}
+
+.play-btn {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+.play-btn:hover {
+  background-color: gray;
+}
+
+.add-btn {
+  background-color: #aaa;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 40px;
+}
+.add-btn:hover {
+  background-color: gray;
+}
+
+.previous-btn {
+  background-color: #555;
+  color: white !important;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+.previous-btn:hover {
+  background-color: gray;
+}
+
+.next-btn {
+  background-color: #555;
+  color: white !important;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+.next-btn:hover {
+  background-color: gray;
+}
+
+.leave-test-btn {
+  background-color: #555;
+  color: white !important;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+.leave-test-btn:hover {
+  background-color: gray;
+}
+
+.enter-test-btn {
+  background-color: #333;
+  color: white !important;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+.enter-test-btn:hover {
+  background-color: gray;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+}

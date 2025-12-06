@@ -1,0 +1,191 @@
+@charset "UTF-8";
+* {
+  margin: 0;
+}
+
+.btn-custom2 {
+  background-color: #f0f0f0;
+  text-align: center;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 65vh;
+}
+.main h2 {
+  font-size: 2.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.main .flashcard-container {
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 50%;
+  height: 80%;
+}
+.main .flashcard-container .top {
+  z-index: 1000;
+}
+.main .flashcard-container .next {
+  z-index: 999;
+}
+
+.main .flashcard-container .flashcard {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  perspective: 1000px;
+  transition: transform ease;
+  cursor: pointer;
+}
+
+.main .flashcard-container .flashcard .front,
+.main .flashcard-container .flashcard .back {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  position: absolute;
+  backface-visibility: hidden;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgb(35, 33, 33);
+  transition: transform 0.5s;
+}
+.main .flashcard-container .flashcard .front {
+  transform: rotateY(0deg);
+  z-index: 2; /* 確保正面在頂部 */
+}
+.main .flashcard-container .flashcard .front i.icon {
+  position: absolute; /* 將圖標設置為絕對定位 */
+  left: 3rem; /* 圖標相對於 .front 的左側 */
+}
+.main .flashcard-container .flashcard .back {
+  /* background-color: #dddddd; */
+  transform: rotateY(180deg);
+  z-index: 1; /* 確保背面在底部 */
+}
+.main .flashcard-container .flashcard.flipped .front {
+  transform: rotateY(-180deg);
+}
+.main .flashcard-container .flashcard.flipped .back {
+  transform: rotateY(0deg);
+}
+.main .flashcard-container .flashcard.discard-right {
+  overflow-x: hidden;
+  animation: slideOutRight 0.7s ease forwards,
+    changeColor 0.7s ease-in-out forwards;
+}
+.main .flashcard-container .flashcard.discard-right .back {
+  animation: changeColor 0.7s ease-in-out forwards;
+}
+.main .flashcard-container .flashcard.discard-right .reword {
+  animation: changeColor 0.7s ease-in-out forwards;
+}
+.main .flashcard-container .flashcard.discard-left {
+  animation: slideOutLeft 0.7s ease forwards,
+    changeColor 0.7s ease-in-out forwards;
+}
+.main .flashcard-container .flashcard.discard-left .back {
+  animation: changeColor 0.7s ease-in-out forwards;
+}
+.main .flashcard-container .flashcard.discard-left .reword {
+  color: rgba(255, 0, 0, 1);
+  animation: changeColor 0.7s ease-in-out forwards;
+}
+.main .flashcard-container .flashcard.last {
+  animation: slideOutLeft 0.7s ease forwards;
+}
+.main .flashcard-container .flashcard.lastAnimation {
+  animation: slideBack 0.7s ease forwards;
+}
+
+.main .flashcard-container .flashcard.top {
+  transform: translateY(0);
+  opacity: 1;
+  transition: none;
+}
+
+@keyframes slideBack {
+  to {
+    transform: translate(0, 0);
+  }
+}
+@keyframes slideOutRight {
+  to {
+    transform: translate(300px, 0);
+  }
+}
+@keyframes slideOutLeft {
+  to {
+    transform: translate(-300px, 0);
+  }
+}
+@keyframes slideBack {
+  to {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes discard-left {
+  to {
+    transform: translateX(-300px, 0);
+  }
+}
+
+@keyframes discard-right {
+  to {
+    transform: translateX(300px, 0);
+  }
+}
+
+@keyframes changeColor {
+  to {
+    background-color: rgba(255, 255, 255, 0);
+    border-color: rgba(255, 255, 255, 0);
+    color: rgba(255, 255, 255, 0);
+  }
+}
+
+footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  height: 4rem;
+}
+footer .footer-button {
+  color: white;
+  background-color: #777;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  margin: 0rem 2rem;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+footer .footer-button:hover {
+  background-color: #333;
+  color: white;
+}
+
+footer .footer-button:disabled {
+  background-color: #d6d6d6;
+  color: white;
+  cursor: auto;
+}

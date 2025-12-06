@@ -1,0 +1,25 @@
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+.button-container .vertical-btn {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  text-decoration: none;
+  padding: 20px 200px;
+  background-color: #555;
+  color: white;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+.button-container .vertical-btn:hover {
+  background-color: #676767;
+}
+
+div.welcome {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}

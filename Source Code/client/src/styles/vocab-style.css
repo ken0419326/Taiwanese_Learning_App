@@ -1,0 +1,20 @@
+.tag-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.tag-text {
+  flex-grow: 1;
+}
+
+.actions {
+  display: flex;
+}
+
+.pen-btn,
+.remove-btn {
+  border: none;
+  margin-left: 5px;
+  cursor: pointer;
+}

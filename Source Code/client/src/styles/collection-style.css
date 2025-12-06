@@ -1,0 +1,108 @@
+body {
+  margin: 0;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column; /* Display cards vertically */
+  align-items: center; /* Center cards horizontally */
+  min-height: calc(100vh - 80px);
+  transition: transform 0.3s ease;
+  overflow-x: hidden;
+}
+
+.card {
+  position: relative;
+  width: 800px;
+  max-width: 90%; /* Adjust the width of the card */
+  background-color: #fff;
+  border-radius: 8px;
+  margin-bottom: 20px; /* Add some spacing between cards */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card .card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+  width: 100%;
+}
+
+.card .card-content .basic {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.card .card-content .basic .card-text {
+  text-align: left;
+}
+
+.card .card-content .basic .actions {
+  margin-left: 30px;
+}
+
+.card .card-content .detailed {
+  flex-grow: 1;
+  text-align: left;
+  align-items: center;
+  justify-content: center;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.play-btn {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.play-btn:hover {
+  background-color: gray;
+}
+
+.pen-btn,
+.remove-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+.pen-btn:hover,
+.remove-btn:hover {
+  color: gray;
+}
+
+.save-btn {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.save-btn:hover {
+  background-color: gray;
+}
