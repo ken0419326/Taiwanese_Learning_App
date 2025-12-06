@@ -1,7 +1,5 @@
 ## Readme
 
-This is the readme file for Group 8 on selected file and source code submitted for Milestone 4 of term project.
-
 ### Source code
 
 The source code of the developed system, O̍h Tâi Bûn, is located in **Source Code** folder. The documents regarding the development environment setup, **README.md**, is located under **Source Code** folder as well.
@@ -21,10 +19,6 @@ The product backlog with mostly user stories are presented as **Product Backlog.
 ### Task board
 
 The task board by the end of the development of the current system is shown by **Agile Taskboard.png** in this folder
-
-### Status report
-
-The status report at the end of this stage can be viewed in **Status Report.pdf**
 
 ### Unit test
 
